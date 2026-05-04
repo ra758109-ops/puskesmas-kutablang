@@ -17,24 +17,34 @@
         </p>
     </div>
 
+@if ($errors->any())
+    <div class="bg-red-100 text-red-700 p-4 mb-4 rounded-xl">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
     <div class="bg-gray-50 rounded-[40px] shadow-sm border-0 mb-12 overflow-hidden">
         <div class="p-6 md:p-12">
-            <form action="#" method="POST">
-                @csrf
+          <form action="{{ route('pendaftaran.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="md:col-span-2">
                         <label class="block text-gray-700 font-bold mb-2">Nama Lengkap <span class="text-red-500">*</span></label>
-                        <input type="text" class="w-full px-5 py-3 rounded-2xl border border-gray-200 focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all bg-white" placeholder="Masukkan nama lengkap" required>
+                        <input type="text" name="nama" class="w-full px-5 py-3 rounded-2xl border border-gray-200 focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all bg-white" placeholder="Masukkan nama lengkap" required>
                     </div>
 
                     <div class="md:col-span-2">
-                        <label class="block text-gray-700 font-bold mb-2">NIK</label>
-                        <input type="text" class="w-full px-5 py-3 rounded-2xl border border-gray-200 focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all bg-white" placeholder="Nomor Induk Kependudukan (Opsional)">
+                        <label class="block text-gray-700 font-bold mb-2">NIK <span class="text-red-500">*</span></label>
+                        <input type="text" name="nik" class="w-full px-5 py-3 rounded-2xl border border-gray-200 focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all bg-white" placeholder="Nomor Induk Kependudukan" required>
                     </div>
 
                     <div>
                         <label class="block text-gray-700 font-bold mb-2">Jenis Kelamin <span class="text-red-500">*</span></label>
-                        <select class="w-full px-5 py-3 rounded-2xl border border-gray-200 focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all bg-white" required>
+                        <select name="jenis_kelamin" class="w-full px-5 py-3 rounded-2xl border border-gray-200 focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all bg-white" required>
                             <option value="">Pilih Jenis Kelamin</option>
                             <option>Laki-laki</option>
                             <option>Perempuan</option>
@@ -48,17 +58,17 @@
 
                     <div class="md:col-span-2">
                         <label class="block text-gray-700 font-bold mb-2">Alamat <span class="text-red-500">*</span></label>
-                        <textarea class="w-full px-5 py-3 rounded-2xl border border-gray-200 focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all bg-white" rows="3" placeholder="Alamat lengkap saat ini"></textarea>
+                        <textarea name="alamat" class="w-full px-5 py-3 rounded-2xl border border-gray-200 focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all bg-white" rows="3" placeholder="Alamat lengkap saat ini"></textarea>
                     </div>
 
                     <div class="md:col-span-2">
                         <label class="block text-gray-700 font-bold mb-2">Nomor Telepon/WhatsApp <span class="text-red-500">*</span></label>
-                        <input type="tel" class="w-full px-5 py-3 rounded-2xl border border-gray-200 focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all bg-white" placeholder="0812xxxx" required>
+                        <input type="tel" name="nomor_hp" class="w-full px-5 py-3 rounded-2xl border border-gray-200 focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all bg-white" placeholder="0812xxxx" required>
                     </div>
 
                     <div class="md:col-span-2">
                         <label class="block text-gray-700 font-bold mb-2">Jenis Layanan <span class="text-red-500">*</span></label>
-                        <select class="w-full px-5 py-3 rounded-2xl border border-gray-200 focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all bg-white" required>
+                        <select name="jenis_layanan" class="w-full px-5 py-3 rounded-2xl border border-gray-200 focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all bg-white" required>
                             <option value="">Pilih Jenis Layanan</option>
                             <option>Rawat Jalan</option>
                             <option>Imunisasi</option>
@@ -71,7 +81,7 @@
 
                     <div class="md:col-span-2">
                         <label class="block text-gray-700 font-bold mb-2">Dokter Pilihan</label>
-                        <select class="w-full px-5 py-3 rounded-2xl border border-gray-200 focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all bg-white">
+                        <select name="dokter_pilihan" class="w-full px-5 py-3 rounded-2xl border border-gray-200 focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all bg-white">
                             <option value="">Pilih Dokter (opsional)</option>
                             <option>Dr. Ahmad Hidayat</option>
                             <option>Dr. Siti Nurhaliza</option>
@@ -82,12 +92,12 @@
 
                     <div>
                         <label class="block text-gray-700 font-bold mb-2">Tanggal Kunjungan <span class="text-red-500">*</span></label>
-                        <input type="date" class="w-full px-5 py-3 rounded-2xl border border-gray-200 focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all bg-white" required>
+                        <input type="date" name="tanggal_kunjungan" class="w-full px-5 py-3 rounded-2xl border border-gray-200 focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all bg-white" required>
                     </div>
 
                     <div>
                         <label class="block text-gray-700 font-bold mb-2">Waktu Kunjungan <span class="text-red-500">*</span></label>
-                        <select class="w-full px-5 py-3 rounded-2xl border border-gray-200 focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all bg-white" required>
+                        <select name="waktu_kunjungan" class="w-full px-5 py-3 rounded-2xl border border-gray-200 focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all bg-white" required>
                             <option value="">Pilih Waktu</option>
                             <option>08:00 - 09:00</option>
                             <option>09:00 - 10:00</option>
@@ -101,7 +111,7 @@
 
                     <div class="md:col-span-2">
                         <label class="block text-gray-700 font-bold mb-2">Keluhan</label>
-                        <textarea class="w-full px-5 py-3 rounded-2xl border border-gray-200 focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all bg-white" rows="3" placeholder="Ceritakan keluhan kesehatan Anda"></textarea>
+                        <textarea name="keluhan" class="w-full px-5 py-3 rounded-2xl border border-gray-200 focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all bg-white" rows="3" placeholder="Ceritakan keluhan kesehatan Anda"></textarea>
                     </div>
 
                     <div>
@@ -171,4 +181,61 @@
         </div>
     </div>
 </div>
+
+<!-- Toast Notifikasi Estetik -->
+@if(session('sukses'))
+<div id="toast-success" class="fixed bottom-10 right-10 flex flex-col w-full max-w-[320px] p-5 text-gray-800 bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border-t-4 border-red-900 z-50 animate-bounce">
+
+    <div class="flex items-center mb-4">
+        <div class="inline-flex items-center justify-center flex-shrink-0 w-10 h-10 text-red-700 bg-red-50 rounded-xl">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        </div>
+        <div class="ml-3">
+            <div class="text-sm font-bold text-red-900 leading-tight">Pendaftaran Berhasil!</div>
+            <div class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">Status: Terkonfirmasi</div>
+        </div>
+        <button type="button" onclick="this.parentElement.parentElement.remove()" class="ml-auto text-gray-300 hover:text-gray-500">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+        </button>
+    </div>
+
+    <div class="bg-gray-50 rounded-2xl p-3 mb-4 border border-gray-100">
+        <div class="text-[10px] text-gray-400 text-center font-bold">NOMOR ANTRIAN ANDA</div>
+        <div class="text-3xl font-black text-red-700 text-center tracking-tighter">{{ session('antrian') }}</div>
+    </div>
+
+    <!-- Tombol WA -->
+    <a href="https://wa.me/6281264066128?text=Halo%20Puskesmas,%20saya%20sudah%20daftar%20online.%20Nomor%20Antrian:%20{{ session('antrian') }}"
+       target="_blank"
+       class="flex items-center justify-center gap-2 w-full py-3 px-4 bg-red-900 text-white text-xs font-bold rounded-xl hover:bg-red-800 transition-all shadow-lg shadow-red-900/20 active:scale-95">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.246 2.248 3.484 5.232 3.483 8.413-.003 6.557-5.338 11.892-11.893 11.892-1.997-.001-3.951-.5-5.688-1.448l-6.308 1.654zm6.749-3.936c1.55.917 3.39 1.403 5.26 1.403 5.514 0 10.002-4.488 10.002-10.002 0-2.673-1.041-5.185-2.93-7.076-1.889-1.891-4.402-2.932-7.075-2.932-5.515 0-10.01 4.496-10.01 10.01 0 2.042.624 4.029 1.805 5.713l-1.011 3.691 3.784-.993z"/></svg>
+       Mohon konfirmasi WA agar admin dapat memvalidasi antrian Anda lebih cepat.
+    </a>
+</div>
+
+    <!-- Tombol Close -->
+    <button type="button" onclick="this.parentElement.remove()" class="ml-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-red-900 rounded-lg p-1.5 inline-flex h-8 w-8">
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+        </svg>
+    </button>
+</div>
+@endif
+
+<!-- Script untuk Loading Button -->
+<script>
+    const form = document.querySelector('form');
+    const btn = form.querySelector('button[type="submit"]');
+
+    form.addEventListener('submit', function() {
+        btn.innerHTML = `
+            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Mengirim...
+        `;
+        btn.classList.add('opacity-70', 'cursor-not-allowed');
+    });
+</script>
 @endsection
