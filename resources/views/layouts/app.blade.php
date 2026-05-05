@@ -94,7 +94,7 @@
                         <img src="https://cdn-icons-png.flaticon.com/512/149/149852.png" class="w-3 opacity-50" alt="search">
                         <input type="text" placeholder="Cari..." class="bg-transparent border-none outline-none text-xs ml-2 w-full">
                     </div>
-                    <a href="#" class="shrink-0">
+                    <a href="/login" class="shrink-0 hover:opacity-80 transition-all">
                         <img src="https://cdn-icons-png.flaticon.com/512/1144/1144760.png" class="w-8" alt="profile">
                     </a>
                 </div>

@@ -1,0 +1,39 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class AuthController extends Controller
+{
+    // Menampilkan halaman login
+    public function showLogin() {
+        return view('login'); // Pastikan kamu sudah buat file resources/views/auth/login.blade.php
+    }
+
+    // Proses login
+    public function processLogin(Request $request) {
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect()->intended('/admin/dashboard');
+        }
+
+        return back()->withErrors([
+            'email' => 'Email atau Password yang Anda masukkan salah.',
+        ]);
+    }
+
+    // Logout
+    public function logout(Request $request) {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/');
+    }
+}
