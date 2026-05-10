@@ -67,28 +67,21 @@
                     </div>
 
                     <div class="md:col-span-2">
-                        <label class="block text-gray-700 font-bold mb-2">Jenis Layanan <span class="text-red-500">*</span></label>
-                        <select name="jenis_layanan" class="w-full px-5 py-3 rounded-2xl border border-gray-200 focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all bg-white" required>
-                            <option value="">Pilih Jenis Layanan</option>
-                            <option>Rawat Jalan</option>
-                            <option>Imunisasi</option>
-                            <option>KIA (Kesehatan Ibu & Anak)</option>
-                            <option>Konsultasi Gizi</option>
-                            <option>Pemeriksaan Laboratorium</option>
-                            <option>Keluarga Berencana (KB)</option>
-                        </select>
-                    </div>
+                <label class="block text-gray-700 font-bold mb-2">Pilih Unit Layanan / Poli <span class="text-red-500">*</span></label>
+                <select id="poli_id" name="poli_id" class="w-full px-5 py-3 rounded-2xl border border-gray-200 focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all bg-white" required>
+                    <option value="">-- Pilih Poli --</option>
+                    @foreach($polis as $p)
+                        <option value="{{ $p->id }}">{{ $p->nama_poli }}</option>
+                    @endforeach
+                </select>
+            </div>
 
-                    <div class="md:col-span-2">
-                        <label class="block text-gray-700 font-bold mb-2">Dokter Pilihan</label>
-                        <select name="dokter_pilihan" class="w-full px-5 py-3 rounded-2xl border border-gray-200 focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all bg-white">
-                            <option value="">Pilih Dokter (opsional)</option>
-                            <option>Dr. Ahmad Hidayat</option>
-                            <option>Dr. Siti Nurhaliza</option>
-                            <option>Dr. Budi Santoso</option>
-                            <option>Dr. Rini Wijaya</option>
-                        </select>
-                    </div>
+            <div class="md:col-span-2">
+                <label class="block text-gray-700 font-bold mb-2">Dokter Pilihan <span class="text-red-500">*</span></label>
+                <select id="dokter_id" name="dokter_id" class="w-full px-5 py-3 rounded-2xl border border-gray-200 focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all bg-white" required>
+                    <option value="">Pilih poli terlebih dahulu</option>
+                </select>
+                 </div>
 
                     <div>
                         <label class="block text-gray-700 font-bold mb-2">Tanggal Kunjungan <span class="text-red-500">*</span></label>
@@ -237,5 +230,35 @@
         `;
         btn.classList.add('opacity-70', 'cursor-not-allowed');
     });
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#poli_id').on('change', function() {
+        var poliID = $(this).val();
+        var dokterDropdown = $('#dokter_id');
+
+        if(poliID) {
+            dokterDropdown.html('<option value="">Sedang memuat dokter...</option>');
+            $.ajax({
+                url: '/get-dokter/' + poliID,
+                type: "GET",
+                dataType: "json",
+                success:function(data) {
+                    dokterDropdown.empty();
+                    dokterDropdown.append('<option value="">-- Pilih Dokter --</option>');
+                    $.each(data, function(key, value) {
+                        // Pastikan kolom di database kamu namanya 'nama_dokter'
+                        dokterDropdown.append('<option value="'+ value.id +'">'+ value.nama_dokter +'</option>');
+                    });
+                }
+            });
+        } else {
+            dokterDropdown.empty();
+            dokterDropdown.append('<option value="">Pilih poli terlebih dahulu</option>');
+        }
+    });
+});
 </script>
 @endsection

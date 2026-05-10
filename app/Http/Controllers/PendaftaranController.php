@@ -4,13 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Pasien;
+use App\Models\Dokter;
+use App\Models\Poli;
 
 class PendaftaranController extends Controller
 {
-    public function index()
-    {
-        return view('pendaftaran');
-    }
+   public function index()
+{
+    $polis = Poli::all();
+    return view('pendaftaran', compact('polis'));
+}
 
    public function store(Request $request)
 {
@@ -74,5 +77,13 @@ public function cekAntrian(Request $request)
     }
 
     return response()->json(['success' => false, 'message' => 'Data NIK tidak ditemukan.']);
+}
+
+    public function getDokter($poli_id)
+    {
+        // Cari dokter berdasarkan poli_id
+        $dokters = Dokter::where('poli_id', $poli_id)->get();
+
+        return response()->json($dokters);
 }
 }

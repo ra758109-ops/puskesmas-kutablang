@@ -7,15 +7,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <!-- Menambahkan Animate.css untuk animasi masuk -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    
+
     <title>Login Admin | Puskesmas Teluk Lingga</title>
-    
+
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        'maroon-dark': '#800000',
+                        'maroon-dark': '#4a0e0e',
                     },
                     animation: {
                         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
@@ -26,7 +26,7 @@
     </script>
     <style>
         body {
-            background: linear-gradient(135deg, #800000 0%, #2a0000 100%);
+            background: linear-gradient(135deg, #4a0e0e 0%, #2a0000 100%);
             overflow: hidden;
         }
         /* Efek partikel sederhana di background */
@@ -54,7 +54,7 @@
     </div>
 
     <div class="animate__animated animate__fadeInUp bg-white/95 backdrop-blur-sm p-8 rounded-[30px] shadow-2xl w-full max-w-md border-b-8 border-maroon-dark transition-all hover:shadow-maroon-dark/20">
-        
+
         <div class="text-center mb-8">
             <div class="relative inline-block">
                 <img src="{{ asset('images/logo.png') }}" class="w-20 h-20 mx-auto mb-4 drop-shadow-lg transform hover:scale-110 transition-transform duration-300" alt="Logo">
@@ -70,7 +70,7 @@
             <div class="group">
                 <label class="text-xs font-bold text-gray-500 uppercase ml-1 group-focus-within:text-maroon-dark transition-colors">Email Address</label>
                 <div class="relative">
-                    <input type="email" name="email" required 
+                    <input type="email" name="email" required
                         placeholder="admin@puskesmas.go.id"
                         class="w-full px-4 py-3 mt-1 rounded-xl border border-gray-200 focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all duration-300 bg-gray-50 focus:bg-white">
                 </div>
@@ -78,7 +78,7 @@
 
             <div class="group">
                 <label class="text-xs font-bold text-gray-500 uppercase ml-1 group-focus-within:text-maroon-dark transition-colors">Password</label>
-                <input type="password" name="password" required 
+                <input type="password" name="password" required
                     placeholder="••••••••"
                     class="w-full px-4 py-3 mt-1 rounded-xl border border-gray-200 focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all duration-300 bg-gray-50 focus:bg-white">
             </div>
@@ -105,7 +105,7 @@
     </div>
 
     <footer class="absolute bottom-4 text-white/40 text-[10px] uppercase tracking-widest">
-        &copy; 2024 Puskesmas Teluk Lingga - Sistem Informasi Terpadu
+        &copy; 2026 Puskesmas Teluk Lingga - Sistem Informasi Terpadu
     </footer>
 
 </body>
