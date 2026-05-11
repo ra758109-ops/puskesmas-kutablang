@@ -4,18 +4,15 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PendaftaranController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Admin\BeritaController;
 
 
 Route::get('/', function () {
     return view('beranda');
 });
 
-Route::get('/pendaftaran', function () {
-    return view('pendaftaran');
-});
-
-Route::get('/layanan', function () {
-    return view('layanan');
+Route::get('/profil', function () {
+    return view('profil');
 });
 
 Route::get('/jadwal', function () {
@@ -26,49 +23,51 @@ Route::get('/program', function () {
     return view('program');
 });
 
-Route::get('/berita', function () {
-    return view('berita');
-});
+// Layanan Publik
+Route::get('/layanan', [ServiceController::class, 'landing'])->name('public.layanan');
 
-Route::get('/berita/{slug}', function ($slug) {
-    return view('berita-detail', ['slug' => $slug]);
-});
+// Berita Publik
+Route::get('/berita', [BeritaController::class, 'indexPublik'])->name('public.berita');
+Route::get('/berita/{slug}', [BeritaController::class, 'show'])->name('public.berita.detail');
 
-Route::get('/profil', function () {
-    return view('profil');
-});
-
+// Pendaftaran Online
+Route::get('/pendaftaran', [PendaftaranController::class, 'index'])->name('pendaftaran.index');
 Route::post('/pendaftaran', [PendaftaranController::class, 'store'])->name('pendaftaran.store');
-Route::get('/cek-antrian', [App\Http\Controllers\PendaftaranController::class, 'cekAntrian'])->name('cek.antrian');
+Route::get('/cek-antrian', [PendaftaranController::class, 'cekAntrian'])->name('cek.antrian');
 Route::get('/get-dokter/{poli_id}', [PendaftaranController::class, 'getDokter']);
-Route::get('/pendaftaran', [PendaftaranController::class, 'index']);
 
-//admin
 
-Route::middleware(['auth'])->group(function () {
-    Route::prefix('admin')->group(function () {
-         
- 
-Route::get('/layanan/create', [ServiceController::class, 'create'])->name('admin.services.create');
-Route::post('/layanan/store', [ServiceController::class, 'store'])->name('admin.services.store');
-        
-        // Dashboard
-        Route::get('/dashboard', function () {
-            return view('admin.dashboard');
-        });
 
-        // Berita
-        Route::get('/berita', function () {
-            return view('admin.berita');
-        });
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'processLogin']);
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
-        // Layanan (Disesuaikan agar sinkron dengan href sidebar kamu)
-        Route::get('/layanan', [ServiceController::class, 'index'])->name('admin.services.index');
 
+
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     
-        Route::get('/pendaftar', function () {
-            return view('admin.pendaftar');
-        });
-        
+    // Dashboard
+    Route::get('/dashboard', function () {
+        return view('Admin.dashboard');
+    })->name('dashboard');
+
+    // Manajemen Layanan
+    Route::prefix('layanan')->name('services.')->group(function () {
+        Route::get('/', [ServiceController::class, 'index'])->name('index');
+        Route::get('/create', [ServiceController::class, 'create'])->name('create');
+        Route::post('/store', [ServiceController::class, 'store'])->name('store');
     });
+
+    // Manajemen Berita
+    Route::prefix('berita')->name('berita.')->group(function () {
+        Route::get('/', [BeritaController::class, 'index'])->name('index');
+        Route::get('/create', [BeritaController::class, 'create'])->name('create');
+        Route::post('/store', [BeritaController::class, 'store'])->name('store');
+    });
+
+    // Manajemen Pendaftar
+    Route::get('/pendaftar', function () {
+        return view('Admin.pendaftar');
+    })->name('pendaftar.index');
+    
 });
