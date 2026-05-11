@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PendaftaranController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Admin\ServiceController;
 
 
 Route::get('/', function () {
@@ -42,28 +43,32 @@ Route::get('/cek-antrian', [App\Http\Controllers\PendaftaranController::class, '
 Route::get('/get-dokter/{poli_id}', [PendaftaranController::class, 'getDokter']);
 Route::get('/pendaftaran', [PendaftaranController::class, 'index']);
 
+//admin
 
-
-// admin
-Route::get('/admin', function () {
-    return view('admin.dashboard');
-});
-
-Route::get('/admin/berita', function () {
-    return view('admin.berita');
-});
-
-// Halaman Login
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'processLogin']);
-Route::get('/logout', [AuthController::class, 'logout']);
-
-// Proteksi Dashboard (Hanya yang sudah login bisa masuk)
 Route::middleware(['auth'])->group(function () {
-    Route::get('/admin/dashboard', function () {
-        return view('admin.dashboard');
-    });
-    Route::get('/admin/berita', function () {
-        return view('admin.berita');
+    Route::prefix('admin')->group(function () {
+         
+ 
+Route::get('/layanan/create', [ServiceController::class, 'create'])->name('admin.services.create');
+Route::post('/layanan/store', [ServiceController::class, 'store'])->name('admin.services.store');
+        
+        // Dashboard
+        Route::get('/dashboard', function () {
+            return view('admin.dashboard');
+        });
+
+        // Berita
+        Route::get('/berita', function () {
+            return view('admin.berita');
+        });
+
+        // Layanan (Disesuaikan agar sinkron dengan href sidebar kamu)
+        Route::get('/layanan', [ServiceController::class, 'index'])->name('admin.services.index');
+
+    
+        Route::get('/pendaftar', function () {
+            return view('admin.pendaftar');
+        });
+        
     });
 });
