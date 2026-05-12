@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Berita;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\File; // Tambahkan ini untuk urusan hapus file nanti
 
 class BeritaController extends Controller
 {
@@ -27,43 +26,63 @@ class BeritaController extends Controller
     // Form Tambah Berita
     public function create()
     {
-        // Pastikan nama file blade kamu adalah Admin/berita_create.blade.php
-        // atau sesuaikan jika kamu taruh di folder Admin/berita/create.blade.php
-        return view('Admin.berita_create');
+        // Mengarahkan ke file Admin/beritacreate.blade.php
+        return view('Admin.beritacreate');
     }
 
-    // Simpan Berita ke Database
+    // Simpan Berita Baru
     public function store(Request $request)
     {
-        // 1. Validasi Input
         $request->validate([
-            'judul'   => 'required|max:255',
-            'konten'  => 'required',
-            'kategori'=> 'required',
-            'gambar'  => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048', // Max 2MB
+            'judul'    => 'required|max:255',
+            'konten'   => 'required',
+            'kategori' => 'required',
         ]);
 
-        $namaGambar = null;
-
-        // 2. Logika Upload Gambar
-        if ($request->hasFile('gambar')) {
-            $file = $request->file('gambar');
-            // Beri nama unik: waktu_namaasli.jpg
-            $namaGambar = time() . '_' . $file->getClientOriginalName();
-            
-            // Simpan ke folder public/uploads/berita
-            $file->move(public_path('uploads/berita'), $namaGambar);
-        }
-
-        // 3. Simpan ke Database
         Berita::create([
             'judul'    => $request->judul,
             'slug'     => Str::slug($request->judul),
             'konten'   => $request->konten,
             'kategori' => $request->kategori,
-            'gambar'   => $namaGambar, // Nama file yang disimpan
         ]);
 
         return redirect()->route('admin.berita.index')->with('success', 'Berita berhasil diterbitkan!');
+    }
+
+    // Menampilkan Form Edit
+    public function edit($id)
+    {
+        $berita = Berita::findOrFail($id);
+        // Mengarahkan ke file Admin/beritaedit.blade.php
+        return view('Admin.beritaedit', compact('berita'));
+    }
+
+    // Memproses Perubahan Data (Update)
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'judul'    => 'required|max:255',
+            'konten'   => 'required',
+            'kategori' => 'required',
+        ]);
+
+        $berita = Berita::findOrFail($id);
+        $berita->update([
+            'judul'    => $request->judul,
+            'slug'     => Str::slug($request->judul),
+            'konten'   => $request->konten,
+            'kategori' => $request->kategori,
+        ]);
+
+        return redirect()->route('admin.berita.index')->with('success', 'Berita berhasil diperbarui!');
+    }
+
+    // Menghapus Berita
+    public function destroy($id)
+    {
+        $berita = Berita::findOrFail($id);
+        $berita->delete();
+
+        return redirect()->route('admin.berita.index')->with('success', 'Berita berhasil dihapus!');
     }
 }

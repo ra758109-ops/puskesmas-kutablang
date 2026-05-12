@@ -57,6 +57,33 @@ class ServiceController extends Controller
 
     return view('layanan', compact('services'));
 }
+
+// Menampilkan Form Edit
+public function edit($id)
+{
+    $service = Service::findOrFail($id);
+    return view('Admin.layanan.edit', compact('service'));
+}
+
+// Memproses Update Data
+public function update(Request $request, $id)
+{
+    $request->validate([
+        'nama_layanan' => 'required',
+        'ikon' => 'required',
+        'deskripsi_singkat' => 'required',
+    ]);
+
+    $service = Service::findOrFail($id);
+    $service->update([
+        'nama_layanan' => $request->nama_layanan,
+        'slug' => \Illuminate\Support\Str::slug($request->nama_layanan),
+        'ikon' => $request->ikon,
+        'deskripsi_singkat' => $request->deskripsi_singkat,
+    ]);
+
+    return redirect()->route('admin.services.index')->with('success', 'Layanan berhasil diperbarui!');
+}
 }
 
 
