@@ -58,7 +58,7 @@
 
                     <div class="md:col-span-2">
                         <label class="block text-gray-700 font-bold mb-2">Alamat <span class="text-red-500">*</span></label>
-                        <textarea name="alamat" class="w-full px-5 py-3 rounded-2xl border border-gray-200 focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all bg-white" rows="3" placeholder="Alamat lengkap saat ini"></textarea>
+                        <textarea name="alamat" class="w-full px-5 py-3 rounded-2xl border border-gray-200 focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all bg-white" rows="3" placeholder="Alamat lengkap saat ini" required></textarea>
                     </div>
 
                     <div class="md:col-span-2">
@@ -175,7 +175,6 @@
     </div>
 </div>
 
-<!-- Toast Notifikasi Estetik -->
 @if(session('sukses'))
 <div id="toast-success" class="fixed bottom-10 right-10 flex flex-col w-full max-w-[320px] p-5 text-gray-800 bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] border-t-4 border-red-900 z-50 animate-bounce">
 
@@ -197,26 +196,49 @@
         <div class="text-3xl font-black text-red-700 text-center tracking-tighter">{{ session('antrian') }}</div>
     </div>
 
-    <!-- Tombol WA -->
+    <button type="button" onclick="printAntrian()" class="flex items-center justify-center gap-2 w-full mb-2 py-3 px-4 bg-gray-800 text-white text-xs font-bold rounded-xl hover:bg-black transition-all shadow-lg active:scale-95">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H7a2 2 0 00-2 2v4h10z"></path></svg>
+        Cetak Struk Antrian
+    </button>
+
     <a href="https://wa.me/6281264066128?text=Halo%20Puskesmas,%20saya%20sudah%20daftar%20online.%20Nomor%20Antrian:%20{{ session('antrian') }}"
        target="_blank"
        class="flex items-center justify-center gap-2 w-full py-3 px-4 bg-red-900 text-white text-xs font-bold rounded-xl hover:bg-red-800 transition-all shadow-lg shadow-red-900/20 active:scale-95">
         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.246 2.248 3.484 5.232 3.483 8.413-.003 6.557-5.338 11.892-11.893 11.892-1.997-.001-3.951-.5-5.688-1.448l-6.308 1.654zm6.749-3.936c1.55.917 3.39 1.403 5.26 1.403 5.514 0 10.002-4.488 10.002-10.002 0-2.673-1.041-5.185-2.93-7.076-1.889-1.891-4.402-2.932-7.075-2.932-5.515 0-10.01 4.496-10.01 10.01 0 2.042.624 4.029 1.805 5.713l-1.011 3.691 3.784-.993z"/></svg>
-       Mohon konfirmasi WA agar admin dapat memvalidasi antrian Anda lebih cepat.
+        Konfirmasi WhatsApp
     </a>
-</div>
-
-    <!-- Tombol Close -->
-    <button type="button" onclick="this.parentElement.remove()" class="ml-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-red-900 rounded-lg p-1.5 inline-flex h-8 w-8">
-        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-        </svg>
-    </button>
 </div>
 @endif
 
-<!-- Script untuk Loading Button -->
+<div id="printArea" class="hidden">
+    <div style="width: 320px; padding: 20px; font-family: 'Courier New', Courier, monospace; color: #000; background: white;">
+        <div style="text-align: center; border-bottom: 2px dashed #000; padding-bottom: 10px;">
+            <h2 style="margin: 0; font-size: 18px;">PUSKESMAS KUTABLANG</h2>
+            <p style="font-size: 10px; margin: 5px 0;">Jl. Medan-Banda Aceh, Kec. Gandapura</p>
+        </div>
+
+        <div style="text-align: center; padding: 20px 0;">
+            <p style="margin: 0; font-size: 12px;">NOMOR ANTRIAN ANDA</p>
+            <h1 style="font-size: 50px; margin: 10px 0; font-weight: bold;">{{ session('antrian') }}</h1>
+            <p style="margin: 0; font-size: 11px;">Status: TERKONFIRMASI</p>
+        </div>
+
+        <div style="border-top: 1px dashed #000; padding-top: 10px; font-size: 11px;">
+            <p>Tanggal: {{ date('d/m/Y') }}</p>
+            <p>Waktu: {{ date('H:i') }} WIB</p>
+            <p style="margin-top: 10px; font-style: italic;">*Harap bawa Kartu Identitas/BPJS saat kunjungan.</p>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px; border-top: 2px dashed #000; padding-top: 10px;">
+            <p style="font-size: 10px;">TERIMA KASIH</p>
+            <p style="font-size: 9px;">Layanan Cepat & Akurat</p>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    // 1. Script Loading Button
     const form = document.querySelector('form');
     const btn = form.querySelector('button[type="submit"]');
 
@@ -230,35 +252,51 @@
         `;
         btn.classList.add('opacity-70', 'cursor-not-allowed');
     });
-</script>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-$(document).ready(function() {
-    $('#poli_id').on('change', function() {
-        var poliID = $(this).val();
-        var dokterDropdown = $('#dokter_id');
+    // 2. Script Dependent Dropdown Dokter
+    $(document).ready(function() {
+        $('#poli_id').on('change', function() {
+            var poliID = $(this).val();
+            var dokterDropdown = $('#dokter_id');
 
-        if(poliID) {
-            dokterDropdown.html('<option value="">Sedang memuat dokter...</option>');
-            $.ajax({
-                url: '/get-dokter/' + poliID,
-                type: "GET",
-                dataType: "json",
-                success:function(data) {
-                    dokterDropdown.empty();
-                    dokterDropdown.append('<option value="">-- Pilih Dokter --</option>');
-                    $.each(data, function(key, value) {
-                        // Pastikan kolom di database kamu namanya 'nama_dokter'
-                        dokterDropdown.append('<option value="'+ value.id +'">'+ value.nama_dokter +'</option>');
-                    });
-                }
-            });
-        } else {
-            dokterDropdown.empty();
-            dokterDropdown.append('<option value="">Pilih poli terlebih dahulu</option>');
-        }
+            if(poliID) {
+                dokterDropdown.html('<option value="">Sedang memuat dokter...</option>');
+                $.ajax({
+                    url: '/get-dokter/' + poliID,
+                    type: "GET",
+                    dataType: "json",
+                    success:function(data) {
+                        dokterDropdown.empty();
+                        dokterDropdown.append('<option value="">-- Pilih Dokter --</option>');
+                        $.each(data, function(key, value) {
+                            dokterDropdown.append('<option value="'+ value.id +'">'+ value.nama_dokter +'</option>');
+                        });
+                    }
+                });
+            } else {
+                dokterDropdown.empty();
+                dokterDropdown.append('<option value="">Pilih poli terlebih dahulu</option>');
+            }
+        });
     });
-});
+
+    // 3. Script Fungsi Print (BARU)
+    function printAntrian() {
+        var printContents = document.getElementById('printArea').innerHTML;
+        var printWindow = window.open('', '', 'height=600,width=400');
+
+        printWindow.document.write('<html><head><title>Struk Antrian - Kutablang</title>');
+        printWindow.document.write('</head><body>');
+        printWindow.document.write(printContents);
+        printWindow.document.write('</body></html>');
+
+        printWindow.document.close();
+        printWindow.focus();
+
+        setTimeout(function() {
+            printWindow.print();
+            printWindow.close();
+        }, 500);
+    }
 </script>
 @endsection
