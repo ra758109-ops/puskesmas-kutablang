@@ -87,7 +87,8 @@
                     <li><a href="/layanan" class="px-3 py-2 text-maroon-dark text-[0.85rem] font-medium hover:opacity-70 transition-all {{ Request::is('layanan*') ? 'nav-active' : '' }}">Layanan</a></li>
                     <li><a href="/jadwal" class="px-3 py-2 text-maroon-dark text-[0.85rem] font-medium hover:opacity-70 transition-all {{ Request::is('jadwal*') ? 'nav-active' : '' }}">Jadwal</a></li>
                     <li><a href="/pendaftaran" class="px-3 py-2 text-maroon-dark text-[0.85rem] font-medium hover:opacity-70 transition-all {{ Request::is('pendaftaran*') ? 'nav-active' : '' }}">Pendaftaran</a></li>
-                    <li><a href="/program" class="px-3 py-2 text-maroon-dark text-[0.85rem] font-medium hover:opacity-70 transition-all {{ Request::is('program*') ? 'nav-active' : '' }}">Program</a></li>
+                    {{-- DI SINI DIUBAH --}}
+                    <li><a href="{{ route('program.index') }}" class="px-3 py-2 text-maroon-dark text-[0.85rem] font-medium hover:opacity-70 transition-all {{ Request::is('program*') ? 'nav-active' : '' }}">Program</a></li>
                     <li><a href="/berita" class="px-3 py-2 text-maroon-dark text-[0.85rem] font-medium hover:opacity-70 transition-all {{ Request::is('berita*') ? 'nav-active' : '' }}">Berita</a></li>
                 </ul>
 
