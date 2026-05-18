@@ -1,100 +1,130 @@
 @extends('layouts.app')
 
-@section('content')
-<div class="bg-[#f9f5f6] min-h-screen pb-20 animate-[fadeIn_0.6s_ease-out]">
-    <div class="container mx-auto px-4 pt-6 max-w-6xl">
-        <div class="bg-maroon-dark text-white text-center py-8 md:py-10 rounded-[35px] shadow-lg mb-8 transition-all duration-500 hover:shadow-maroon-dark/20">
-            <h1 class="text-xl md:text-2xl lg:text-3xl font-bold uppercase tracking-widest mb-2 px-4">Program & Kegiatan Kesehatan</h1>
-            <p class="text-[10px] md:text-xs opacity-80 font-light italic px-6">Berbagai program promotif dan preventif untuk meningkatkan derajat kesehatan masyarakat Kutablang</p>
-        </div>
+@section('title', 'Program Kesehatan')
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10 mx-2">
-          <div class="bg-white border-b-4 border-maroon-dark p-5 rounded-[25px] shadow-sm text-center hover:scale-105 hover:shadow-md transition-all duration-300">
-                <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Imunisasi Dasar</p>
-                <h3 class="text-xl font-black text-maroon-dark">95%</h3>
-                <p class="text-[9px] text-gray-500 italic">Capaian Tahun 2025</p>
+@section('content')
+{{-- HERO SECTION --}}
+<section class="bg-gradient-to-r from-maroon-dark to-slate-900 text-white py-20 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10 bg-cover bg-center" style="background-image: url('{{ asset('images/kutablang.png') }}');"></div>
+    <div class="container mx-auto px-4 relative z-10 text-center" data-aos="fade-down">
+        <span class="text-teal-400 font-bold tracking-widest uppercase text-xs">Inovasi & Kegiatan</span>
+        <h1 class="text-4xl md:text-5xl font-extrabold mt-2 mb-4">Program Kesehatan Masyarakat</h1>
+        <p class="text-slate-300 max-w-2xl mx-auto text-sm leading-relaxed">
+            Ikuti berbagai program promosi kesehatan dan pencegahan penyakit yang diselenggarakan oleh Puskesmas Kutablang untuk mewujudkan masyarakat yang sehat dan produktif.
+        </p>
+    </div>
+</section>
+
+{{-- SECTION KARTU STATISTIK (PRESET_DATA SEPERTI GAMBAR KEDUA) --}}
+<section class="pt-16 pb-8 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+
+            {{-- Kartu 1 --}}
+            <div class="bg-white rounded-[30px] p-8 text-center shadow-[0_15px_30px_rgba(0,0,0,0.05)] border-b-[6px] border-maroon-dark transition-transform hover:-translate-y-2 duration-300">
+                <span class="text-xs font-black tracking-widest text-slate-400 uppercase">Imunisasi Dasar</span>
+                <div class="text-4xl font-black text-maroon-dark my-2 tracking-tight">95%</div>
+                <p class="text-xs text-slate-400 italic">Capaian Tahun 2025</p>
             </div>
-        <div class="bg-white border-b-4 border-maroon-dark p-5 rounded-[25px] shadow-sm text-center hover:scale-105 hover:shadow-md transition-all duration-300">
-                <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Gizi Baik Balita</p>
-                <h3 class="text-xl font-black text-teal-600">92%</h3>
-                <p class="text-[9px] text-gray-500 italic">Kesehatan Anak</p>
+
+            {{-- Kartu 2 --}}
+            <div class="bg-white rounded-[30px] p-8 text-center shadow-[0_15px_30px_rgba(0,0,0,0.05)] border-b-[6px] border-maroon-dark transition-transform hover:-translate-y-2 duration-300">
+                <span class="text-xs font-black tracking-widest text-slate-400 uppercase">Gizi Baik Balita</span>
+                <div class="text-4xl font-black text-teal-500 my-2 tracking-tight">92%</div>
+                <p class="text-xs text-slate-400 italic">Kesehatan Anak</p>
             </div>
-            <div class="bg-white border-b-4 border-maroon-dark p-5 rounded-[25px] shadow-sm text-center hover:scale-105 hover:shadow-md transition-all duration-300">
-                <p class="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">Peserta Prolanis</p>
-                <h3 class="text-xl font-black text-orange-400">180</h3>
-                <p class="text-[9px] text-gray-500 italic">Anggota Aktif</p>
+
+            {{-- Kartu 3 --}}
+            <div class="bg-white rounded-[30px] p-8 text-center shadow-[0_15px_30px_rgba(0,0,0,0.05)] border-b-[6px] border-maroon-dark transition-transform hover:-translate-y-2 duration-300">
+                <span class="text-xs font-black tracking-widest text-slate-400 uppercase">Peserta Prolanis</span>
+                <div class="text-4xl font-black text-orange-400 my-2 tracking-tight">180</div>
+                <p class="text-xs text-slate-400 italic">Anggota Aktif</p>
             </div>
+
         </div>
     </div>
+</section>
 
-    <div class="container mx-auto px-4 max-w-6xl">
-        <div class="space-y-8">
-            <div class="bg-white rounded-[40px] p-6 md:p-8 shadow-sm border border-gray-50 flex flex-col lg:flex-row gap-8 hover:shadow-md transition-all duration-500 group">
-                <div class="lg:w-2/5 overflow-hidden rounded-[30px] relative h-64 lg:h-auto">
-                    <img src="{{ asset('images/posyanduu.jpg') }}" alt="Posyandu" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                    <div class="absolute top-4 left-4 bg-maroon-dark text-white px-3 py-1.5 rounded-xl text-[10px] font-bold shadow-lg">
-                        Rutin Bulanan
+{{-- LIST PROGRAM (DINAMIS DARI DATABASE) --}}
+<section class="pb-20 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <div class="h-[1px] bg-gray-200 max-w-6xl mx-auto mb-16"></div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            @forelse($programs ?? [] as $program)
+            <div class="bg-white rounded-[40px] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 group border border-gray-100" data-aos="fade-up" data-aos-delay="{{ $loop->iteration * 100 }}">
+                <div class="relative h-64 overflow-hidden">
+                    @if($program->gambar)
+                        <img src="{{ asset('storage/' . $program->gambar) }}" alt="{{ $program->judul }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                    @else
+                        <img src="{{ asset('images/kutablang.png') }}" alt="Default" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                    @endif
+                    <div class="absolute top-5 left-5">
+                        <span class="bg-maroon-dark text-white text-[10px] font-bold px-4 py-2 rounded-full uppercase tracking-widest">Kegiatan</span>
                     </div>
                 </div>
-
-                <div class="lg:w-3/5 flex flex-col justify-center">
-                    <h3 class="text-xl md:text-2xl font-black text-maroon-dark mb-3 flex items-center gap-2">
-                        Posyandu
-                        <span class="h-1 w-10 bg-maroon-dark/20 rounded-full"></span>
+                <div class="p-8">
+                    <h3 class="text-xl font-bold text-maroon-dark mb-4 group-hover:text-teal-600 transition-colors">
+                        {{ $program->judul }}
                     </h3>
-                    <p class="text-gray-600 leading-relaxed mb-6 text-xs md:text-sm">
-                        Program Pos Pelayanan Terpadu untuk pemantauan kesehatan ibu hamil, bayi, dan balita. Kegiatan meliputi penimbangan berat badan, pengukuran tinggi badan, imunisasi, pemberian vitamin A, konseling gizi, dan pemeriksaan kesehatan ibu hamil.
+                    <p class="text-gray-500 text-sm leading-relaxed mb-6">
+                        {{ Str::limit($program->deskripsi, 150) }}
                     </p>
+                    <div class="flex items-center justify-between border-t border-gray-100 pt-4">
+                        <span class="text-xs text-gray-400 font-medium">
+                            <i class="far fa-calendar-alt mr-2 text-teal-500"></i>
+                            {{ $program->created_at ? $program->created_at->format('d M Y') : '18 Mei 2026' }}
+                        </span>
 
-                    <div class="bg-[#f9f5f6] p-5 rounded-[30px] mb-6 border border-maroon-dark/5">
-                        <h4 class="font-bold text-maroon-dark text-[11px] mb-3 uppercase tracking-wider">Aktivitas Utama:</h4>
-                        <ul class="grid grid-cols-1 md:grid-cols-2 gap-y-2 text-[11px] text-gray-600 font-medium">
-                            <li class="flex items-center gap-2"> <span class="text-maroon-dark">✔</span> Penimbangan dan pengukuran balita</li>
-                            <li class="flex items-center gap-2"> <span class="text-maroon-dark">✔</span> Imunisasi dasar dan booster</li>
-                            <li class="flex items-center gap-2"> <span class="text-maroon-dark">✔</span> Pemberian vitamin A & obat cacing</li>
-                            <li class="flex items-center gap-2"> <span class="text-maroon-dark">✔</span> Pemeriksaan ibu hamil (ANC)</li>
-                            <li class="flex items-center gap-2"> <span class="text-maroon-dark">✔</span> Konseling KB & Gizi</li>
-                            <li class="flex items-center gap-2"> <span class="text-maroon-dark">✔</span> Deteksi dini tumbuh kembang</li>
-                        </ul>
-                    </div>
-
-                    <div class="flex flex-wrap gap-2">
-                        <div class="bg-white border border-gray-100 px-3 py-2 rounded-xl shadow-sm flex-1">
-                            <span class="text-[9px] text-gray-400 block uppercase font-bold">Jadwal</span>
-                            <span class="text-maroon-dark text-[10px] font-bold italic"> Rabu minggu ke-2 dan ke-4, pukul 09:00-12:00</span>
-                        </div>
-                        <div class="bg-white border border-gray-100 px-3 py-2 rounded-xl shadow-sm flex-1">
-                            <span class="text-[9px] text-gray-400 block uppercase font-bold">Lokasi</span>
-                            <span class="text-maroon-dark text-[10px] font-bold italic">12 posyandu di Balai RW seluruh kelurahan</span>
-                        </div>
-                        <div class="bg-white border border-gray-100 px-3 py-2 rounded-xl shadow-sm flex-1">
-                            <span class="text-[9px] text-gray-400 block uppercase font-bold">Target</span>
-                            <span class="text-maroon-dark text-[10px] font-bold italic"> 850 balita terdaftar, 285 ibu hamil</span>
-                        </div>
+                        <button onclick="openModalProgram('{{ $program->judul }}', '{{ e($program->deskripsi) }}', '{{ $program->gambar ? asset('storage/' . $program->gambar) : asset('images/kutablang.png') }}')" class="text-xs font-bold text-teal-600 hover:text-maroon-dark transition-colors flex items-center gap-2">
+                            Baca Selengkapnya <i class="fas fa-arrow-right"></i>
+                        </button>
                     </div>
                 </div>
             </div>
+            @empty
+            <div class="col-span-3 text-center py-4">
+                <div class="inline-block p-8 bg-white rounded-3xl shadow-sm border border-dashed border-gray-300 w-full max-w-xl">
+                    <i class="fas fa-clipboard-list text-4xl text-gray-300 mb-3"></i>
+                    <p class="text-gray-400 italic text-sm">Belum ada data program kegiatan tambahan yang dimasukkan dari admin.</p>
+                </div>
+            </div>
+            @endforelse
+
         </div>
+    </div>
+</section>
 
-        <section class="mt-16 bg-[#cce7e8] rounded-[40px] p-10 text-center relative overflow-hidden group border border-teal-50/50">
-            <div class="relative z-10">
-                <h3 class="text-xl md:text-2xl font-black text-teal-900 mb-2">Ikut Serta dalam Program Kami</h3>
-                <p class="text-xs text-gray-600 mb-6 max-w-sm mx-auto">Mari bersama-sama meningkatkan kesehatan masyarakat Kutablang melalui program-program berkualitas</p>
-                <div class="flex justify-center">
-                    <a href="#" class="bg-maroon-dark text-white px-8 py-3 rounded-2xl font-bold text-xs shadow-md hover:scale-105 active:scale-95 transition-all">
-                        Pelajari Lebih Lanjut
-                    </a>
-                </div>
-            </div>
-            <div class="absolute -right-10 -top-10 w-32 h-32 bg-white/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-1000"></div>
-        </section>
+{{-- MODAL DETAIL PROGRAM --}}
+<div id="modalProgram" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-[2000] flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-2xl rounded-[40px] overflow-hidden shadow-2xl border-t-8 border-maroon-dark animate-[zoomIn_0.3s_ease-out]">
+        <div class="relative h-48 sm:h-64 bg-gray-100">
+            <img id="modalImg" src="" class="w-full h-full object-cover" alt="Detail">
+            <button onclick="closeModalProgram()" class="absolute top-4 right-4 bg-black/50 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold hover:bg-black/80">&times;</button>
+        </div>
+        <div class="p-8 max-h-[60vh] overflow-y-auto">
+            <h3 id="modalTitle" class="text-2xl font-bold text-maroon-dark mb-4"></h3>
+            <p id="modalDesc" class="text-gray-600 text-sm leading-relaxed whitespace-pre-line"></p>
+        </div>
     </div>
 </div>
 
-<style>
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-</style>
+<script>
+    function openModalProgram(title, desc, imgSrc) {
+        document.getElementById('modalTitle').innerText = title;
+        document.getElementById('modalDesc').innerText = desc;
+        document.getElementById('modalImg').src = imgSrc;
+        document.getElementById('modalProgram').classList.remove('hidden');
+    }
+
+    function closeModalProgram() {
+        document.getElementById('modalProgram').classList.add('hidden');
+    }
+
+    window.onclick = function(event) {
+        let modal = document.getElementById('modalProgram');
+        if (event.target == modal) closeModalProgram();
+    }
+</script>
 @endsection

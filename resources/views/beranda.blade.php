@@ -76,14 +76,26 @@
     </div>
 </section>
 
-{{-- SECTION DOKTER (DINAMIS DENGAN FILTER) --}}
+{{-- SECTION DOKTER (DINAMIS DENGAN FILTER) - STRUKTUR HEADER SUDAH DISINKRONKAN AGAR SEJAJAR --}}
 <section class="py-20 bg-white">
     <div class="container mx-auto px-4">
-        <div class="text-center mb-12">
-            <span class="text-teal-600 font-bold tracking-widest uppercase text-xs">Tenaga Medis</span>
-            <h2 class="text-3xl md:text-4xl font-bold text-maroon-dark mt-2">Dokter Spesialis & Umum</h2>
 
-            <div class="flex flex-wrap justify-center gap-3 mt-8">
+        {{-- BAGIAN HEADER YANG DIPERBAIKI BIAR TOMBOLNYA COCOK DI KANAN --}}
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+            <div class="text-left">
+                <span class="text-teal-600 font-bold tracking-widest uppercase text-xs block">Tenaga Medis</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-maroon-dark mt-2">Dokter Spesialis & Umum</h2>
+            </div>
+            <div class="flex-shrink-0">
+                <a href="{{ url('/jadwal') }}" class="text-maroon-dark font-bold hover:underline flex items-center gap-2">
+                    Lihat Semua Jadwal <i class="fas fa-arrow-right text-xs"></i>
+                </a>
+            </div>
+        </div>
+
+        {{-- AREA TOMBOL FILTER KATEGORI --}}
+        <div class="text-center mb-12">
+            <div class="flex flex-wrap justify-center gap-3 mt-4">
                 <button onclick="filterDokter('all')" class="filter-btn active px-6 py-2 rounded-full border-2 border-maroon-dark text-sm font-bold transition-all">Semua</button>
                 @foreach($polis as $p)
                 <button onclick="filterDokter('{{ $p->nama_poli }}')" class="filter-btn px-6 py-2 rounded-full border-2 border-gray-200 text-gray-500 text-sm font-bold hover:border-maroon-dark hover:text-maroon-dark transition-all">
@@ -136,7 +148,6 @@
                     </p>
                     <div class="flex items-center justify-between">
                         <span class="text-xs text-gray-400 font-medium"><i class="far fa-calendar-alt mr-2"></i>{{ $program->created_at->format('d M Y') }}</span>
-                        {{-- DI SINI DIUBAH --}}
                         <a href="{{ route('program.index') }}" class="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center text-maroon-dark hover:bg-maroon-dark hover:text-white transition-all">
                             <i class="fas fa-arrow-right"></i>
                         </a>

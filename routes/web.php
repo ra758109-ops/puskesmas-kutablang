@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\JadwalController;
 
 // ==========================================
 // 1. HALAMAN USER / PENGUNJUNG (DINAMIS)
@@ -14,13 +15,12 @@ use App\Http\Controllers\Admin\ServiceController;
 // Beranda Utama (Menggunakan HomeController agar data Poli & Dokter muncul)
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/layanan', function () {
-    return view('layanan');
-});
+Route::get('/layanan', [ServiceController::class, 'index'])->name('layanan.index');
 
-Route::get('/jadwal', function () {
-    return view('jadwal');
-});
+Route::get('/jadwal', [HomeController::class, 'jadwal'])->name('jadwal.index');
+
+// Route untuk halaman jadwal praktik
+Route::get('/jadwal', [JadwalController::class, 'index']);
 
 // Halaman Program (Menampilkan data dinamis program/kegiatan puskesmas)
 Route::get('/program', [ProgramController::class, 'index'])->name('program.index');

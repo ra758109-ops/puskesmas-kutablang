@@ -42,4 +42,15 @@ class HomeController extends Controller
         // Cukup satu return saja yang mengarah ke beranda
         return view('beranda', compact('dokters', 'polis', 'programs'));
     }
+
+    // ==========================================
+    // FUNGSI BARU UNTUK HALAMAN JADWAL USER
+    // ==========================================
+    public function jadwal()
+    {
+        // Ambil semua data dokter beserta data poli tempat mereka bertugas
+        $dokters = Dokter::with('poli')->get();
+
+        return view('jadwal', compact('dokters'));
+    }
 }
