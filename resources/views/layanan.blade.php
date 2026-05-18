@@ -3,58 +3,122 @@
 @section('title', 'Layanan Medis')
 
 @section('content')
-{{-- HERO SECTION --}}
-<section class="bg-gradient-to-r from-maroon-dark to-slate-900 text-white py-20 relative overflow-hidden">
-    <div class="absolute inset-0 opacity-10 bg-cover bg-center" style="background-image: url('{{ asset('images/kutablang.png') }}');"></div>
-    <div class="container mx-auto px-4 relative z-10 text-center" data-aos="fade-down">
-        <span class="text-teal-400 font-bold tracking-widest uppercase text-xs">Fasilitas & Perawatan</span>
-        <h1 class="text-4xl md:text-5xl font-extrabold mt-2 mb-4">Layanan Medis & Poliklinik</h1>
-        <p class="text-slate-300 max-w-2xl mx-auto text-sm leading-relaxed">
-            Puskesmas Kutablang menyediakan berbagai layanan kesehatan dasar yang komprehensif, ditangani oleh tenaga medis profesional untuk menjamin kesehatan Anda dan keluarga.
-        </p>
-    </div>
-</section>
+<style>
+    .transition-flex {
+        transition: flex 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
-{{-- LIST LAYANAN (DINAMIS DARI DATABASE) --}}
-<section class="py-16 bg-gray-50">
-    <div class="container mx-auto px-4 max-w-6xl">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    .vertical-text {
+        writing-mode: vertical-lr;
+        text-orientation: mixed;
+    }
 
-            @forelse($services ?? [] as $service)
-            <div class="bg-white rounded-[35px] p-8 shadow-[0_10px_25px_rgba(0,0,0,0.02)] border border-gray-100 hover:shadow-xl transition-all duration-300 group" data-aos="fade-up">
-                <div class="w-14 h-14 bg-maroon-dark/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-maroon-dark transition-colors duration-300">
-                    {{-- Ikon Dinamis sesuai inputan admin kawanmu --}}
-                    <i class="{{ $service->ikon ?? 'fas fa-stethoscope' }} text-2xl text-maroon-dark group-hover:text-white transition-colors duration-300"></i>
-                </div>
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 
-                {{-- Nama Layanan / Poliklinik sesuai DB --}}
-                <h3 class="text-xl font-bold text-slate-800 mb-3 group-hover:text-maroon-dark transition-colors">
-                    {{ $service->nama_layanan }}
-                </h3>
+    .animate-details {
+        animation: fadeIn 0.5s ease-out forwards;
+    }
+</style>
 
-                {{-- Deskripsi Singkat sesuai DB --}}
-                <p class="text-gray-500 text-sm leading-relaxed mb-4">
-                    {{ $service->deskripsi_singkat }}
-                </p>
+<main class="container mx-auto px-4 py-12">
 
-                <div class="border-t border-gray-50 pt-4 flex items-center justify-between">
-                    <span class="text-xs font-semibold text-teal-600 bg-teal-50 px-3 py-1 rounded-full">Tersedia</span>
-                    <a href="{{ url('/pendaftaran') }}" class="text-xs font-bold text-slate-400 hover:text-maroon-dark transition-colors flex items-center gap-1">
-                        Daftar Antrian <i class="fas fa-chevron-right text-[10px]"></i>
-                    </a>
-                </div>
-            </div>
-            @empty
-            {{-- Tampilan Fallback jika database masih kosong --}}
-            <div class="col-span-3 text-center py-8">
-                <div class="inline-block p-8 bg-white rounded-3xl shadow-sm border border-dashed border-gray-300 w-full max-w-xl">
-                    <i class="fas fa-briefcase-medical text-4xl text-gray-300 mb-3"></i>
-                    <p class="text-gray-400 italic text-sm">Belum ada data unit layanan medis yang dimasukkan dari admin.</p>
-                </div>
-            </div>
-            @endforelse
-
+    {{-- HEADER --}}
+    <section class="text-center mb-12">
+        <div class="inline-block bg-[#700B21] text-white px-10 py-3 rounded-full shadow-xl mb-6">
+            <h1 class="text-2xl md:text-3xl font-bold italic">
+                Layanan Kesehatan Kami
+            </h1>
         </div>
+    </section>
+
+    {{-- CARD LAYANAN --}}
+    <div class="flex flex-col md:flex-row h-auto md:h-[550px] w-full gap-2 overflow-hidden rounded-[30px] bg-gray-100 p-2 shadow-2xl">
+
+        @forelse($services ?? [] as $index => $item)
+
+        @php
+            $colors = [
+                '#967146',
+                '#D4A373',
+                '#3B426E',
+                '#2D4F3B',
+                '#1A2A3A',
+                '#700B21'
+            ];
+
+            $bgColor = $colors[$index % count($colors)];
+        @endphp
+
+        <div class="group relative flex-1 transition-flex hover:flex-[6] overflow-hidden rounded-2xl cursor-pointer"
+             style="background-color: {{ $bgColor }}">
+
+            {{-- Overlay --}}
+            <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-all"></div>
+
+            {{-- Content --}}
+            <div class="absolute inset-0 p-6 flex flex-col justify-end text-white">
+
+                <div class="flex items-end gap-4">
+
+                    {{-- Nomor --}}
+                    <span class="text-5xl font-bold opacity-40">
+                        {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}
+                    </span>
+
+                    {{-- Judul Vertikal --}}
+                    <h2 class="text-xl font-bold vertical-text group-hover:hidden whitespace-nowrap">
+                        {{ $item->nama_layanan }}
+                    </h2>
+
+                    {{-- Detail Hover --}}
+                    <div class="hidden group-hover:block animate-details pb-2">
+
+                        {{-- Icon --}}
+                        <div class="text-4xl mb-3">
+                            <i class="{{ $item->ikon ?? 'fas fa-hospital' }}"></i>
+                        </div>
+
+                        <h2 class="text-3xl font-bold mb-2">
+                            {{ $item->nama_layanan }}
+                        </h2>
+
+                        <p class="text-sm opacity-90 mb-4 max-w-xs">
+                            {{ $item->deskripsi_singkat }}
+                        </p>
+
+                        <div class="mb-4 text-xs opacity-80">
+                            Online & Walk-in Registration
+                        </div>
+
+                        <a href="/pendaftaran?poli={{ $item->id }}"
+                           class="bg-white px-5 py-2 rounded-lg font-bold text-xs uppercase tracking-wider"
+                           style="color: {{ $bgColor }}">
+                            Daftar Sekarang
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @empty
+        {{-- Jika Tidak Ada Data --}}
+        <div class="w-full flex items-center justify-center py-20">
+            <p class="text-gray-400 italic">
+                Maaf, saat ini belum ada layanan yang tersedia.
+            </p>
+        </div>
+        @endforelse
+
     </div>
-</section>
+</main>
 @endsection

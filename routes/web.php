@@ -7,75 +7,82 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\JadwalController;
+use App\Http\Controllers\Admin\BeritaController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\PasienController;
 
 // ==========================================
-// 1. HALAMAN USER / PENGUNJUNG (DINAMIS)
+// HALAMAN USER / PENGUNJUNG
 // ==========================================
 
-// Beranda Utama (Menggunakan HomeController agar data Poli & Dokter muncul)
+// Beranda
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/layanan', [ServiceController::class, 'index'])->name('layanan.index');
-
-Route::get('/jadwal', [HomeController::class, 'jadwal'])->name('jadwal.index');
-
-// Route untuk halaman jadwal praktik
-Route::get('/jadwal', [JadwalController::class, 'index']);
-
-// Halaman Program (Menampilkan data dinamis program/kegiatan puskesmas)
-Route::get('/program', [ProgramController::class, 'index'])->name('program.index');
-
+// Profil
 Route::get('/profil', function () {
     return view('profil');
 });
 
+// Layanan Publik
+Route::get('/layanan', [ServiceController::class, 'index'])->name('layanan.index');
+
+// Jadwal Praktik Dokter/Nakes
+Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
+
+// Program Kegiatan
+Route::get('/program', [ProgramController::class, 'index'])->name('program.index');
+
+// Berita Publik
+Route::get('/berita', [BeritaController::class, 'indexPublik'])->name('public.berita');
+Route::get('/berita/{slug}', [BeritaController::class, 'show'])->name('public.berita.detail');
+
+
 // ==========================================
-// 2. FITUR PENDAFTARAN & BERITA (USER SISI)
+// PENDAFTARAN ONLINE
 // ==========================================
-Route::get('/pendaftaran', [PendaftaranController::class, 'index']);
+Route::get('/pendaftaran', [PendaftaranController::class, 'index'])->name('pendaftaran.index');
 Route::post('/pendaftaran', [PendaftaranController::class, 'store'])->name('pendaftaran.store');
 Route::get('/cek-antrian', [PendaftaranController::class, 'cekAntrian'])->name('cek.antrian');
 Route::get('/get-dokter/{poli_id}', [PendaftaranController::class, 'getDokter']);
 
-Route::get('/berita', function () {
-    return view('berita');
-});
-Route::get('/berita/{slug}', function ($slug) {
-    return view('berita-detail', ['slug' => $slug]);
-});
 
 // ==========================================
-// 3. HALAMAN LOGIN AUTHENTICATION
+// AUTH LOGIN
 // ==========================================
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'processLogin']);
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
+
 // ==========================================
-// 4. SISI ADMIN (DENGAN PROTEKSI LOGIN)
+// AREA ADMIN (TERPROTEKSI AUTH)
 // ==========================================
-Route::middleware(['auth'])->group(function () {
-    Route::prefix('admin')->group(function () {
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
 
-        // Dashboard Admin
-        Route::get('/dashboard', function () {
-            return view('admin.dashboard');
-        });
+    // Dashboard Utama
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-        // Manajemen Berita Sisi Admin
-        Route::get('/berita', function () {
-            return view('admin.berita');
-        });
-
-        // Kelola data pendaftar puskesmas
-        Route::get('/pendaftar', function () {
-            return view('admin.pendaftar');
-        });
-
-        // Fitur Layanan / Services dari Kawanmu
-        Route::get('/layanan', [ServiceController::class, 'index'])->name('admin.services.index');
-        Route::get('/layanan/create', [ServiceController::class, 'create'])->name('admin.services.create');
-        Route::post('/layanan/store', [ServiceController::class, 'store'])->name('admin.services.store');
-
+    // CRUD LAYANAN
+    Route::prefix('layanan')->name('services.')->group(function () {
+        Route::get('/', [ServiceController::class, 'index'])->name('index');
+        Route::get('/create', [ServiceController::class, 'create'])->name('create');
+        Route::post('/store', [ServiceController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [ServiceController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [ServiceController::class, 'update'])->name('update');
+        Route::delete('/{id}', [ServiceController::class, 'destroy'])->name('destroy');
     });
+
+    // CRUD BERITA
+    Route::prefix('berita')->name('berita.')->group(function () {
+        Route::get('/', [BeritaController::class, 'index'])->name('index');
+        Route::get('/create', [BeritaController::class, 'create'])->name('create');
+        Route::post('/store', [BeritaController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [BeritaController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [BeritaController::class, 'update'])->name('update');
+        Route::delete('/{id}', [BeritaController::class, 'destroy'])->name('destroy');
+    });
+
+    // RESOURCE LAINNYA
+    Route::resource('pasien', PasienController::class);
+    Route::resource('program', ProgramController::class);
 });
