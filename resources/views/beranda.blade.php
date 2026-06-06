@@ -3,7 +3,7 @@
 @section('title', 'Beranda')
 
 @section('content')
-{{-- HERO SECTION (ASLI) --}}
+{{-- HERO SECTION --}}
 <section class="relative min-h-[calc(100vh-75px)] flex items-center overflow-hidden">
     <div class="absolute inset-0 z-[-1] bg-cover bg-center scale-110 animate-[slowZoomOut_3s_ease-out_forwards]"
          style="background-image: url('{{ asset('images/kutablang.png') }}');">
@@ -30,7 +30,7 @@
                 Layanan Kami
             </a>
 
-            <a href="{{ route('pendaftaran.store') }}" class="bg-pink-soft text-maroon-dark px-8 py-3 rounded-full font-semibold hover:opacity-80 hover:scale-105 hover:-translate-y-1 transition-all duration-300 shadow-md active:scale-95">
+            <a href="{{ url('/pendaftaran') }}" class="bg-pink-soft text-maroon-dark px-8 py-3 rounded-full font-semibold hover:opacity-80 hover:scale-105 hover:-translate-y-1 transition-all duration-300 shadow-md active:scale-95">
                 Buat Janji Temu
             </a>
 
@@ -52,9 +52,9 @@
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
             <div data-aos="fade-right">
                 <span class="text-teal-600 font-bold tracking-widest uppercase text-xs">Pelayanan Kami</span>
-                <h2 class="text-3xl md:text-4xl font-bold text-maroon-dark mt-2">Layanan Kesehatan Unggulan</h2>
+                <h2 class="text-3xl md:text-4xl font-bold text-maroon-dark mt-2">Layanan Kesehatan Utama</h2>
             </div>
-            <a href="/layanan" class="text-maroon-dark font-bold hover:underline flex items-center gap-2">
+            <a href="{{ url('/layanan') }}" class="text-maroon-dark font-bold hover:underline flex items-center gap-2">
                 Lihat Semua Layanan <i class="fas fa-arrow-right text-xs"></i>
             </a>
         </div>
@@ -69,18 +69,16 @@
                 <p class="text-gray-500 text-sm leading-relaxed mb-6">
                     {{ Str::limit($poli->deskripsi, 100) }}
                 </p>
-                <a href="/pendaftaran" class="text-xs font-extrabold uppercase tracking-wider text-teal-600 hover:text-maroon-dark transition-colors">Daftar Sekarang</a>
+                <a href="{{ url('/pendaftaran') }}" class="text-xs font-extrabold uppercase tracking-wider text-teal-600 hover:text-maroon-dark transition-colors">Daftar Sekarang</a>
             </div>
             @endforeach
         </div>
     </div>
 </section>
 
-{{-- SECTION DOKTER (DINAMIS DENGAN FILTER) - STRUKTUR HEADER SUDAH DISINKRONKAN AGAR SEJAJAR --}}
+{{-- SECTION DOKTER --}}
 <section class="py-20 bg-white">
     <div class="container mx-auto px-4">
-
-        {{-- BAGIAN HEADER YANG DIPERBAIKI BIAR TOMBOLNYA COCOK DI KANAN --}}
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
             <div class="text-left">
                 <span class="text-teal-600 font-bold tracking-widest uppercase text-xs block">Tenaga Medis</span>
@@ -106,17 +104,25 @@
         </div>
 
         <div id="doctor-wrapper" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            @foreach($dokters as $dokter)
-            <div class="doctor-card group" data-aos="zoom-in" data-specialty="{{ $dokter->poli->nama_poli }}">
-                <div class="relative overflow-hidden rounded-[40px] mb-4 shadow-lg">
-                    <img src="{{ asset('storage/' . $dokter->foto) }}" alt="{{ $dokter->nama_dokter }}" class="w-full h-[350px] object-cover group-hover:scale-110 transition-transform duration-700">
+            @php $doktersAktif = collect($dokters ?? [])->where('is_aktif', 1); @endphp
+            
+            @foreach($doktersAktif as $dokter)
+            <div class="doctor-card group" data-aos="zoom-in" data-specialty="{{ $dokter->poli->nama_poli ?? 'Umum' }}">
+                <div class="relative overflow-hidden rounded-[40px] mb-4 shadow-lg bg-slate-100">
+                    @if($dokter->foto && file_exists(public_path('uploads/dokter/' . $dokter->foto)))
+                        <img src="{{ asset('uploads/dokter/' . $dokter->foto) }}" alt="{{ $dokter->nama_dokter }}" class="w-full h-[350px] object-cover group-hover:scale-110 transition-transform duration-700">
+                    @else
+                        <div class="w-full h-[350px] flex items-center justify-center bg-slate-200 text-slate-400">
+                            <i class="fas fa-user-md text-6xl"></i>
+                        </div>
+                    @endif
                     <div class="absolute inset-0 bg-gradient-to-t from-maroon-dark/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-8">
                         <p class="text-white text-xs leading-relaxed italic">"Melayani dengan sepenuh hati untuk kesehatan masyarakat Kutablang."</p>
                     </div>
                 </div>
                 <div class="text-center">
                     <h4 class="text-lg font-extrabold text-maroon-dark">{{ $dokter->nama_dokter }}</h4>
-                    <p class="text-teal-600 font-medium text-sm">{{ $dokter->poli->nama_poli }}</p>
+                    <p class="text-teal-600 font-medium text-sm">{{ $dokter->poli->nama_poli ?? 'Umum' }}</p>
                 </div>
             </div>
             @endforeach
@@ -124,7 +130,7 @@
     </div>
 </section>
 
-{{-- SECTION PROGRAM PUSKESMAS (TAMBAHAN DINAMIS) --}}
+{{-- SECTION PROGRAM PUSKESMAS --}}
 <section id="program-section" class="py-20 bg-gray-50">
     <div class="container mx-auto px-4">
         <div class="text-center mb-12">
@@ -135,19 +141,36 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             @forelse($programs ?? [] as $program)
             <div class="bg-white rounded-[40px] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 group border border-gray-100">
-                <div class="relative h-64 overflow-hidden">
-                    <img src="{{ asset('storage/' . $program->gambar) }}" alt="{{ $program->judul }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                <div class="relative h-64 overflow-hidden bg-gradient-to-br from-maroon-dark to-rose-950 flex items-center justify-center">
+                    
+                    @if($program->gambar && (file_exists(public_path('uploads/program/' . $program->gambar)) || file_exists(public_path('uploads/' . $program->gambar))))
+                        @php
+                            $pathProgramImg = file_exists(public_path('uploads/program/' . $program->gambar)) 
+                                ? asset('uploads/program/' . $program->gambar) 
+                                : asset('uploads/' . $program->gambar);
+                        @endphp
+                        <img src="{{ $pathProgramImg }}" alt="{{ $program->nama_program }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                    @else
+                        <div class="text-white font-black text-5xl tracking-wider opacity-20 uppercase select-none">
+                            {{ strtoupper(substr($program->nama_program ?? 'PR', 0, 2)) }}
+                        </div>
+                    @endif
+
                     <div class="absolute top-5 left-5">
                         <span class="bg-maroon-dark text-white text-[10px] font-bold px-4 py-2 rounded-full uppercase tracking-widest">Update Terbaru</span>
                     </div>
                 </div>
                 <div class="p-8">
-                    <h3 class="text-xl font-bold text-maroon-dark mb-4 group-hover:text-teal-600 transition-colors">{{ $program->judul }}</h3>
-                    <p class="text-gray-500 text-sm leading-relaxed mb-6">
-                        {{ Str::limit($program->deskripsi, 120) }}
+                    <h3 class="text-xl font-bold text-maroon-dark mb-4 group-hover:text-teal-600 transition-colors line-clamp-1">
+                        {{ $program->nama_program }}
+                    </h3>
+                    <p class="text-gray-500 text-sm leading-relaxed mb-6 line-clamp-3">
+                        {{ $program->deskripsi }}
                     </p>
                     <div class="flex items-center justify-between">
-                        <span class="text-xs text-gray-400 font-medium"><i class="far fa-calendar-alt mr-2"></i>{{ $program->created_at->format('d M Y') }}</span>
+                        <span class="text-xs text-gray-400 font-medium">
+                            <i class="far fa-calendar-alt mr-2"></i>{{ $program->created_at ? $program->created_at->format('d M Y') : now()->format('d M Y') }}
+                        </span>
                         <a href="{{ route('program.index') }}" class="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center text-maroon-dark hover:bg-maroon-dark hover:text-white transition-all">
                             <i class="fas fa-arrow-right"></i>
                         </a>
@@ -165,7 +188,81 @@
     </div>
 </section>
 
-{{-- MODAL CEK ANTRIAN (ASLI) --}}
+{{-- 🚀 BARU: SECTION BERITA & EDUKASI KESEHATAN --}}
+<section id="berita-section" class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+            <div data-aos="fade-right">
+                <span class="text-teal-600 font-bold tracking-widest uppercase text-xs">Artikel & Informasi</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-maroon-dark mt-2">Kabar & Edukasi Sehat</h2>
+            </div>
+            <a href="{{ url('/berita') }}" class="text-maroon-dark font-bold hover:underline flex items-center gap-2">
+                Lihat Semua Artikel <i class="fas fa-arrow-right text-xs"></i>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            @forelse($beritas ?? [] as $index => $berita)
+            <div class="bg-white rounded-[40px] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 group border border-gray-100" data-aos="fade-up" data-aos-delay="{{ $index * 100 }}">
+                <div class="relative h-56 overflow-hidden bg-gradient-to-br from-maroon-dark to-rose-950 flex items-center justify-center">
+                    
+                    {{-- Cek ketersediaan gambar/foto artikel berita --}}
+                    @if(isset($berita->foto) && $berita->foto && file_exists(public_path('uploads/berita/' . $berita->foto)))
+                        <img src="{{ asset('uploads/berita/' . $berita->foto) }}" alt="{{ $berita->judul }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                    @elseif(isset($berita->gambar) && $berita->gambar && file_exists(public_path('uploads/berita/' . $berita->gambar)))
+                        <img src="{{ asset('uploads/berita/' . $berita->gambar) }}" alt="{{ $berita->judul }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                    @else
+                        {{-- Fallback jika tidak ada gambar --}}
+                        <div class="text-white font-black text-5xl tracking-wider opacity-20 uppercase select-none">
+                            {{ strtoupper(substr($berita->judul ?? 'NW', 0, 2)) }}
+                        </div>
+                    @endif
+
+                    <div class="absolute top-5 left-5">
+                        <span class="bg-teal-600 text-white text-[10px] font-bold px-4 py-2 rounded-full uppercase tracking-widest">
+                            {{ $berita->kategori ?? 'Info Sehat' }}
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="p-8">
+                    <h3 class="text-xl font-bold text-maroon-dark mb-3 group-hover:text-teal-600 transition-colors line-clamp-2 min-h-[3.5rem] leading-snug">
+                        <a href="{{ route('public.berita.detail', $berita->slug) }}">
+                            {{ $berita->judul }}
+                        </a>
+                    </h3>
+                    
+                    <p class="text-gray-500 text-sm leading-relaxed mb-6 line-clamp-3">
+                        {{ strip_tags($berita->konten ?? $berita->isi ?? 'Klik baca selengkapnya untuk mendapatkan informasi detail terkait edukasi kesehatan ini.') }}
+                    </p>
+                    
+                    <div class="flex items-center justify-between border-t border-gray-50 pt-4">
+                        <div class="flex flex-col">
+                            <span class="text-xs text-gray-400 font-medium">
+                                <i class="far fa-calendar-alt mr-1.5"></i>{{ $berita->created_at ? $berita->created_at->format('d M Y') : now()->format('d M Y') }}
+                            </span>
+                            <span class="text-[10px] text-gray-400 italic">
+                                {{ $berita->created_at ? $berita->created_at->diffForHumans() : '' }}
+                            </span>
+                        </div>
+                        <a href="{{ route('public.berita.detail', $berita->slug) }}" class="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-maroon-dark hover:text-teal-600 transition-colors">
+                            Baca <i class="fas fa-chevron-right text-[10px]"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            @empty
+            <div class="col-span-3 text-center py-10">
+                <div class="inline-block p-6 bg-white rounded-3xl shadow-sm border border-dashed border-gray-300">
+                    <p class="text-gray-400 italic">Belum ada artikel berita atau edukasi kesehatan yang dipublikasikan.</p>
+                </div>
+            </div>
+            @endforelse
+        </div>
+    </div>
+</section>
+
+{{-- MODAL CEK ANTRIAN --}}
 <div id="modalCek" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-[999] flex items-center justify-center p-4">
     <div class="bg-white w-full max-w-md rounded-[30px] p-8 shadow-2xl border-t-8 border-maroon-dark">
         <div class="flex justify-between items-center mb-6">

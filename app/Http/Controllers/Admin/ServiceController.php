@@ -5,19 +5,24 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Service;
+use App\Models\Dokter; // 👈 Menambahkan model Dokter agar bisa dipanggil
 
 class ServiceController extends Controller
 {
     public function index()
     {
         $services = Service::all();
+        
+        // 👈 Ambil data dokter beserta relasi layanannya untuk tampilan single view di admin
+        $dokters = Dokter::with('service')->latest()->get();
 
         // Mengakomodasi pengecekan dari rute depan maupun admin agar folder Admin/admin tetap aman
         if (request()->routeIs('layanan.index')) {
             return view('layanan', compact('services'));
         }
 
-        return view('Admin.layanan.index', compact('services'));
+        // 👈 Mengirimkan variabel $services sekaligus $dokters ke view admin layanan
+        return view('Admin.layanan.index', compact('services', 'dokters'));
     }
 
     public function create()

@@ -85,4 +85,14 @@ class BeritaController extends Controller
 
         return redirect()->route('admin.berita.index')->with('success', 'Berita berhasil dihapus!');
     }
+
+    // 🚀 BARU: Menampilkan Detail Berita Secara Publik untuk Pembaca
+    public function show($slug)
+    {
+        // Mencari berita berdasarkan slug di database
+        $berita = Berita::where('slug', $slug)->firstOrFail();
+        
+        // Melempar data ke view halaman detail berita publik
+        return view('berita-detail', compact('berita'));
+    }
 }

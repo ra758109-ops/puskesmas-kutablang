@@ -5,7 +5,7 @@
 @section('content')
 <div class="bg-slate-50 min-h-screen font-sans pb-24">
 
-    {{-- HERO SECTION - 100% MENGIKUTI STRUKTUR & UKURAN FONT LAYANAN --}}
+    {{-- HERO SECTION --}}
     <section class="bg-gradient-to-r from-maroon-dark to-slate-900 text-white py-20 relative overflow-hidden">
         <div class="absolute inset-0 opacity-10 bg-cover bg-center" style="background-image: url('{{ asset('images/kutablang.png') }}');"></div>
         <div class="container mx-auto px-4 relative z-10 text-center" data-aos="fade-down">
@@ -29,30 +29,40 @@
         </div>
     </div>
 
-    {{-- LIST JADWAL (DINAMIS DARI DATABASE DENGAN ANIMASI) --}}
+    {{-- LIST JADWAL --}}
     <section class="py-12">
         <div class="container mx-auto px-4 max-w-5xl">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
-                @forelse($dokters ?? [] as $index => $dokter)
-                {{-- Card dengan Efek Hover Lift Naik Up dan Bayangan Soft --}}
+                {{-- FILTER HANYA DOKTER YANG AKTIF YANG DIALIRKAN KE USER --}}
+                @php
+                    $doktersAktif = collect($dokters ?? [])->where('is_aktif', 1);
+                @endphp
+
+                @forelse($doktersAktif as $index => $dokter)
+                {{-- Card dengan Efek Hover Lift Naik Up --}}
                 <div class="bg-white rounded-[32px] overflow-hidden shadow-[0_10px_25px_rgba(0,0,0,0.015)] border border-slate-100 flex flex-col justify-between transform hover:-translate-y-2 hover:shadow-xl transition-all duration-300 group"
                      data-aos="fade-up"
                      data-aos-duration="1000"
                      data-aos-delay="{{ 100 * ($index % 3) }}">
 
                     <div>
-                        {{-- Area Foto & Badge Kategori (Warna Maroon Konsisten) --}}
+                        {{-- Area Foto & Badge Kategori (FOLDER PATH FIX) --}}
                         <div class="relative h-72 bg-slate-100 overflow-hidden m-4 rounded-[24px]">
-                            @if($dokter->foto)
-                                <img src="{{ asset('storage/' . $dokter->foto) }}" alt="{{ $dokter->nama_dokter }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            {{-- 🛠️ PERBAIKAN: MENYESUAIKAN ALAMAT ASSET FOTO DENGAN DASHBOARD ADMIN --}}
+                            @if($dokter->foto && file_exists(public_path('uploads/dokter/' . $dokter->foto)))
+                                <img 
+                                    src="{{ asset('uploads/dokter/' . $dokter->foto) }}" 
+                                    alt="{{ $dokter->nama_dokter }}" 
+                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                >
                             @else
                                 <div class="w-full h-full flex items-center justify-center bg-slate-200 text-slate-400">
                                     <i class="fas fa-user-md text-6xl"></i>
                                 </div>
                             @endif
 
-                            {{-- Badge Poli Kategori Berubah Menjadi Maroon --}}
+                            {{-- Badge Poli --}}
                             <div class="absolute bottom-4 left-4">
                                 <span class="bg-maroon-dark text-white text-[10px] font-bold px-3 py-1.5 rounded-md uppercase tracking-wider shadow-sm">
                                     {{ $dokter->poli->nama_poli ?? 'Umum' }}
@@ -95,7 +105,7 @@
                         </div>
                     </div>
 
-                    {{-- Tombol Pendaftaran / Ambil Antrian Sesuai Gaya Layanan --}}
+                    {{-- Tombol Pendaftaran --}}
                     <div class="px-6 pb-6 pt-2 text-center">
                         <a href="{{ url('/pendaftaran') }}" class="inline-flex items-center justify-center text-xs font-bold text-slate-400 hover:text-maroon-dark transition-colors group/btn gap-1">
                             Ambil Antrian Sekarang
@@ -106,7 +116,7 @@
                 </div>
                 @empty
                 <div class="col-span-3 text-center py-12 bg-white rounded-[32px] border border-dashed border-slate-200" data-aos="fade-up">
-                    <p class="text-slate-400 italic text-sm">Belum ada data jadwal praktik tenaga medis yang tersedia.</p>
+                    <p class="text-slate-400 italic text-sm">Belum ada data jadwal praktik tenaga medis yang aktif saat ini.</p>
                 </div>
                 @endforelse
 

@@ -15,7 +15,7 @@
     </div>
 </section>
 
-{{-- SECTION KARTU STATISTIK (PRESET_DATA SEPERTI GAMBAR KEDUA) --}}
+{{-- SECTION KARTU STATISTIK --}}
 <section class="pt-16 pb-8 bg-gray-50">
     <div class="container mx-auto px-4">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
@@ -53,41 +53,54 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
             @forelse($programs ?? [] as $program)
-            <div class="bg-white rounded-[40px] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 group border border-gray-100" data-aos="fade-up" data-aos-delay="{{ $loop->iteration * 100 }}">
-                <div class="relative h-64 overflow-hidden">
-                    @if($program->gambar)
-                        <img src="{{ asset('storage/' . $program->gambar) }}" alt="{{ $program->judul }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                    @else
-                        <img src="{{ asset('images/kutablang.png') }}" alt="Default" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                    @endif
-                    <div class="absolute top-5 left-5">
-                        <span class="bg-maroon-dark text-white text-[10px] font-bold px-4 py-2 rounded-full uppercase tracking-widest">Kegiatan</span>
+            <div class="bg-white rounded-[40px] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 group border border-gray-100 flex flex-col justify-between" data-aos="fade-up" data-aos-delay="{{ $loop->iteration * 100 }}">
+                <div>
+                    <div class="relative h-64 overflow-hidden bg-gradient-to-br from-rose-50 to-teal-50/30 flex items-center justify-center">
+                        {{-- Menggunakan Logika Gambar/Inisial Huruf seperti Admin jika tidak ada upload gambar instan --}}
+                        @if(isset($program->gambar) && $program->gambar)
+                            <img src="{{ asset('storage/' . $program->gambar) }}" alt="{{ $program->nama_program }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        @else
+                            {{-- Visual inisial keren sebagai pengganti gambar default agar selaras dengan dasbor admin --}}
+                            <div class="absolute inset-0 bg-gradient-to-br from-maroon-dark/90 to-rose-950/90 group-hover:scale-105 transition-transform duration-700"></div>
+                            <div class="relative z-10 text-white font-black text-6xl tracking-wider opacity-20 uppercase select-none">
+                                {{ strtoupper(substr($program->nama_program, 0, 2)) }}
+                            </div>
+                        @endif
+                        <div class="absolute top-5 left-5 z-20">
+                            <span class="bg-maroon-dark text-white text-[10px] font-bold px-4 py-2 rounded-full uppercase tracking-widest shadow-md">
+                                <i class="fa-solid fa-heart-pulse mr-1"></i> Kegiatan
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="p-8 pb-4">
+                        <h3 class="text-xl font-bold text-maroon-dark mb-3 group-hover:text-teal-600 transition-colors line-clamp-2">
+                            {{ $program->nama_program }}
+                        </h3>
+                        <p class="text-gray-500 text-sm leading-relaxed">
+                            {{ Str::limit($program->deskripsi, 130) }}
+                        </p>
                     </div>
                 </div>
-                <div class="p-8">
-                    <h3 class="text-xl font-bold text-maroon-dark mb-4 group-hover:text-teal-600 transition-colors">
-                        {{ $program->judul }}
-                    </h3>
-                    <p class="text-gray-500 text-sm leading-relaxed mb-6">
-                        {{ Str::limit($program->deskripsi, 150) }}
-                    </p>
-                    <div class="flex items-center justify-between border-t border-gray-100 pt-4">
-                        <span class="text-xs text-gray-400 font-medium">
-                            <i class="far fa-calendar-alt mr-2 text-teal-500"></i>
-                            {{ $program->created_at ? $program->created_at->format('d M Y') : '18 Mei 2026' }}
+
+                <div class="p-8 pt-0">
+                    <div class="flex items-center justify-between border-t border-gray-100 pt-4 mt-2">
+                        <span class="bg-amber-50 text-amber-700 border border-amber-200/50 px-3 py-1 rounded-full text-[11px] font-bold">
+                            <i class="fa-regular fa-clock mr-1"></i> {{ $program->label_waktu }}
                         </span>
 
-                        <button onclick="openModalProgram('{{ $program->judul }}', '{{ e($program->deskripsi) }}', '{{ $program->gambar ? asset('storage/' . $program->gambar) : asset('images/kutablang.png') }}')" class="text-xs font-bold text-teal-600 hover:text-maroon-dark transition-colors flex items-center gap-2">
-                            Baca Selengkapnya <i class="fas fa-arrow-right"></i>
+                        <button onclick="openModalProgram('{{ e($program->nama_program) }}', '{{ e($program->deskripsi) }}', '{{ isset($program->gambar) && $program->gambar ? asset('storage/' . $program->gambar) : '' }}', '{{ strtoupper(substr($program->nama_program, 0, 2)) }}')" class="text-xs font-bold text-teal-600 hover:text-maroon-dark transition-colors flex items-center gap-2 group/btn">
+                            Baca Selengkapnya <i class="fas fa-arrow-right transition-transform group-hover/btn:translate-x-1"></i>
                         </button>
                     </div>
                 </div>
             </div>
             @empty
-            <div class="col-span-3 text-center py-4">
-                <div class="inline-block p-8 bg-white rounded-3xl shadow-sm border border-dashed border-gray-300 w-full max-w-xl">
-                    <i class="fas fa-clipboard-list text-4xl text-gray-300 mb-3"></i>
-                    <p class="text-gray-400 italic text-sm">Belum ada data program kegiatan tambahan yang dimasukkan dari admin.</p>
+            <div class="col-span-full text-center py-12">
+                <div class="inline-block p-10 bg-white rounded-3xl shadow-sm border border-dashed border-gray-300 w-full max-w-xl">
+                    <i class="fas fa-clipboard-list text-4xl text-gray-300 mb-4"></i>
+                    <h4 class="text-gray-700 font-bold mb-1">Belum Ada Program</h4>
+                    <p class="text-gray-400 italic text-xs">Belum ada data program kesehatan tambahan yang dimasukkan oleh admin.</p>
                 </div>
             </div>
             @endforelse
@@ -99,9 +112,13 @@
 {{-- MODAL DETAIL PROGRAM --}}
 <div id="modalProgram" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-[2000] flex items-center justify-center p-4">
     <div class="bg-white w-full max-w-2xl rounded-[40px] overflow-hidden shadow-2xl border-t-8 border-maroon-dark animate-[zoomIn_0.3s_ease-out]">
-        <div class="relative h-48 sm:h-64 bg-gray-100">
-            <img id="modalImg" src="" class="w-full h-full object-cover" alt="Detail">
-            <button onclick="closeModalProgram()" class="absolute top-4 right-4 bg-black/50 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold hover:bg-black/80">&times;</button>
+        <div id="modalImgContainer" class="relative h-48 sm:h-64 bg-gray-100 flex items-center justify-center overflow-hidden">
+            <img id="modalImg" src="" class="w-full h-full object-cover hidden" alt="Detail">
+            
+            {{-- Placeholder generator jika program tidak memiliki gambar --}}
+            <div id="modalPlaceholder" class="absolute inset-0 bg-gradient-to-br from-maroon-dark to-rose-950 flex items-center justify-center text-white text-7xl font-black opacity-30 select-none uppercase hidden"></div>
+            
+            <button onclick="closeModalProgram()" class="absolute top-4 right-4 bg-black/50 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold hover:bg-black/80 z-30">&times;</button>
         </div>
         <div class="p-8 max-h-[60vh] overflow-y-auto">
             <h3 id="modalTitle" class="text-2xl font-bold text-maroon-dark mb-4"></h3>
@@ -111,10 +128,23 @@
 </div>
 
 <script>
-    function openModalProgram(title, desc, imgSrc) {
+    function openModalProgram(title, desc, imgSrc, initials) {
         document.getElementById('modalTitle').innerText = title;
         document.getElementById('modalDesc').innerText = desc;
-        document.getElementById('modalImg').src = imgSrc;
+        
+        const imgEl = document.getElementById('modalImg');
+        const placeholderEl = document.getElementById('modalPlaceholder');
+
+        if (imgSrc && imgSrc.trim() !== "") {
+            imgEl.src = imgSrc;
+            imgEl.classList.remove('hidden');
+            placeholderEl.classList.add('hidden');
+        } else {
+            placeholderEl.innerText = initials;
+            placeholderEl.classList.remove('hidden');
+            imgEl.classList.add('hidden');
+        }
+
         document.getElementById('modalProgram').classList.remove('hidden');
     }
 

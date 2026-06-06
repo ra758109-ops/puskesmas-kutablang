@@ -10,6 +10,8 @@ use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\Admin\BeritaController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PasienController;
+use App\Http\Controllers\Admin\DokterController;
+use App\Http\Controllers\Admin\AdminProgramController as AdminProgramController;
 
 // ==========================================
 // HALAMAN USER / PENGUNJUNG
@@ -38,11 +40,12 @@ Route::get('/berita/{slug}', [BeritaController::class, 'show'])->name('public.be
 
 
 // ==========================================
-// PENDAFTARAN ONLINE
+// PENDAFTARAN ONLINE (SINKRON DENGAN AJAX BLADE)
 // ==========================================
 Route::get('/pendaftaran', [PendaftaranController::class, 'index'])->name('pendaftaran.index');
 Route::post('/pendaftaran', [PendaftaranController::class, 'store'])->name('pendaftaran.store');
-Route::get('/cek-antrian', [PendaftaranController::class, 'cekAntrian'])->name('cek.antrian');
+// 🚀 FIX: Nama route diubah dari 'cek.antrian' menjadi 'pendaftaran.cek' agar sesuai dengan AJAX di Blade
+Route::get('/pendaftaran/cek', [PendaftaranController::class, 'cekAntrian'])->name('pendaftaran.cek');
 Route::get('/get-dokter/{poli_id}', [PendaftaranController::class, 'getDokter']);
 
 
@@ -82,7 +85,15 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::delete('/{id}', [BeritaController::class, 'destroy'])->name('destroy');
     });
 
-    // RESOURCE LAINNYA
+    // Resource Dokter & Saklar Kontrol Status Aktif
+    Route::resource('dokter', DokterController::class);
+    Route::patch('/dokter/{id}/toggle-status', [DokterController::class, 'toggleStatus'])->name('dokter.toggleStatus');
+    
+    // Resource Pasien & Fitur Tambahannya
     Route::resource('pasien', PasienController::class);
-    Route::resource('program', ProgramController::class);
+    Route::patch('/pasien/{id}/status/{status}', [PasienController::class, 'updateStatus'])->name('pasien.update-status');
+    Route::get('/pasien/{id}/wa-review', [PasienController::class, 'sendWaReview'])->name('pasien.wa-review');
+    
+    // Resource Program Admin (Gunakan alias yang di-import di atas)
+    Route::resource('program', AdminProgramController::class);
 });

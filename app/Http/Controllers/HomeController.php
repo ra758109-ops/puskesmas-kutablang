@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Dokter;
 use App\Models\Poli;
-// use App\Models\Program; // Aktifkan kalau nanti sudah buat model Program
+use App\Models\Service;
+use App\Models\Program; 
+use App\Models\Berita; // 
 
 class HomeController extends Controller
 {
@@ -14,43 +16,28 @@ class HomeController extends Controller
         // 1. Ambil semua poli untuk Section LAYANAN
         $polis = Poli::all();
 
-        // 2. Ambil dokter (maksimal 8) untuk Section DOKTER
-        $dokters = Dokter::with('poli')->take(8)->get();
+        // 2. Ambil data Service/Poli yang aktif (Maksimal 4 untuk beranda)
+        $services = Service::take(4)->get();
 
-        // 3. Data Dummy untuk Section PROGRAM (Biar dinamis tanpa ribet buat tabel dulu)
-        $programs = collect([
-            (object)[
-                'judul' => 'Posyandu Lansia Serentak',
-                'deskripsi' => 'Pemeriksaan kesehatan gratis dan pemberian nutrisi tambahan bagi lansia di wilayah Kutablang.',
-                'gambar' => 'images/program1.jpg', // Pastikan gambar ada atau ganti link url
-                'created_at' => now()
-            ],
-            (object)[
-                'judul' => 'Sosialisasi Pencegahan Stunting',
-                'deskripsi' => 'Edukasi pola asuh dan gizi seimbang untuk ibu hamil dan menyusui di balai desa.',
-                'gambar' => 'images/program2.jpg',
-                'created_at' => now()
-            ],
-            (object)[
-                'judul' => 'Layanan Vaksinasi Booster',
-                'deskripsi' => 'Penyediaan stok vaksin lengkap untuk meningkatkan imunitas masyarakat Kutablang.',
-                'gambar' => 'images/program3.jpg',
-                'created_at' => now()
-            ]
-        ]);
+        // 3. Ambil dokter terbaru beserta relasi poli-nya (Maksimal 8) untuk Section DOKTER
+        $dokters = Dokter::with('poli')->latest()->take(8)->get();
 
-        // Cukup satu return saja yang mengarah ke beranda
-        return view('beranda', compact('dokters', 'polis', 'programs'));
+        // 4. Ambil data program asli dari database
+        $programs = Program::latest()->take(3)->get(); 
+
+        // 5. 🚀 AMBIL DATA BERITA TERBARU (Maksimal 3 artikel)
+        $beritas = Berita::latest()->take(3)->get();
+
+        // Kirim seluruh variabel termasuk $beritas ke view beranda
+        return view('beranda', compact('dokters', 'polis', 'services', 'programs', 'beritas'));
     }
 
     // ==========================================
-    // FUNGSI BARU UNTUK HALAMAN JADWAL USER
+    // FUNGSI UNTUK HALAMAN JADWAL USER PUBLIK
     // ==========================================
-    public function jadwal()
+    public function jadwal() 
     {
-        // Ambil semua data dokter beserta data poli tempat mereka bertugas
         $dokters = Dokter::with('poli')->get();
-
         return view('jadwal', compact('dokters'));
     }
 }

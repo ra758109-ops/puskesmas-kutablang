@@ -13,3 +13,5 @@ class Poli extends Model
         return $this->hasMany(Dokter::class, 'poli_id');
     }
 }
+
+

@@ -6,31 +6,52 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Service;
 use App\Models\Berita;
-use App\Models\Pasien; // 🛠️ PERBAIKAN 1: Menambahkan titik koma (;) yang kurang
+use App\Models\Pasien; 
+use App\Models\Dokter;
+use App\Models\Program; // 1. TAMBAHKAN INI agar program bisa dipanggil
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $totalLayanan = Service::count();
-        $totalBerita = Berita::count();
-
-        // 🛠️ PERBAIKAN 2: Mengaktifkan perhitungan data pasien asli yang mendaftar HARI INI
+        // 1. HITUNG STATISTIK UTAMA (Untuk Widget Cards di Atas)
+        $totalLayanan       = Service::count();
+        $totalBerita       = Berita::count();
+        $totalDokter       = Dokter::count();
         $totalPasienHariIni = Pasien::whereDate('created_at', today())->count();
 
-        // Mengambil data layanan medis untuk tabel
-        $services = Service::latest()->take(3)->get();
+        // 2. AMBIL DATA TERBARU (Untuk Tabel Ringkasan & Feed)
+        // Ambil data layanan medis untuk tabel ringkasan layanan
+        $servicesData = Service::latest()->take(5)->get();
 
-        // Mengambil berita terbaru untuk timeline feed
+        // Ambil data dokter beserta relasi layanannya untuk tabel ringkasan staf medis
+        $doktersData  = Dokter::with('service')->latest()->take(4)->get();
+
+        // Ambil berita terbaru untuk timeline feed edukasi yang sempat hilang
         $beritaTerbaru = Berita::latest()->take(4)->get();
 
-        // 🛠️ PERBAIKAN 3: Memasukkan 'totalPasienHariIni' ke dalam compact agar bisa dibaca oleh file Blade
+        // Ambil data antrian pasien HARI INI tanpa memanggil relasi 'service' yang tidak ada
+        $pasienHariIniData = Pasien::with('dokter') // Kita ganti dengan memuat data dokter yang valid
+            ->whereDate('created_at', today())
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        // --- TAMBAHAN BARU DI SINI ---
+        // Ambil data program beserta aktivitasnya untuk tabel promkes baru kamu
+        $programs = Program::with('activities')->get(); 
+        // -----------------------------
+
+        // 3. SATUKAN SEMUA VARIABEL KE DALAM COMPACT
         return view('Admin.dashboard', compact(
             'totalLayanan', 
             'totalBerita', 
+            'totalDokter', 
             'totalPasienHariIni', 
-            'services', 
-            'beritaTerbaru'
+            'servicesData', 
+            'doktersData',
+            'beritaTerbaru',
+            'pasienHariIniData',
+            'programs' // 🛠️ TAMBAHKAN INI agar data program terlempar ke Blade!
         ));
     }
 }

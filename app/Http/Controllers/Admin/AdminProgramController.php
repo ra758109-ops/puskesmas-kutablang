@@ -7,7 +7,7 @@ use App\Models\Program;
 use App\Models\ProgramActivity;
 use Illuminate\Http\Request;
 
-class ProgramController extends Controller
+class AdminProgramController extends Controller
 {
     public function index()
     {
