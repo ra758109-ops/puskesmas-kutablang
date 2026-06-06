@@ -76,11 +76,9 @@
     </div>
 </section>
 
-{{-- SECTION DOKTER (DINAMIS DENGAN FILTER) - STRUKTUR HEADER SUDAH DISINKRONKAN AGAR SEJAJAR --}}
+{{-- SECTION DOKTER (DINAMIS DENGAN FILTER) --}}
 <section class="py-20 bg-white">
     <div class="container mx-auto px-4">
-
-        {{-- BAGIAN HEADER YANG DIPERBAIKI BIAR TOMBOLNYA COCOK DI KANAN --}}
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
             <div class="text-left">
                 <span class="text-teal-600 font-bold tracking-widest uppercase text-xs block">Tenaga Medis</span>
@@ -93,7 +91,6 @@
             </div>
         </div>
 
-        {{-- AREA TOMBOL FILTER KATEGORI --}}
         <div class="text-center mb-12">
             <div class="flex flex-wrap justify-center gap-3 mt-4">
                 <button onclick="filterDokter('all')" class="filter-btn active px-6 py-2 rounded-full border-2 border-maroon-dark text-sm font-bold transition-all">Semua</button>
@@ -215,37 +212,125 @@
         if (event.target == modal) closeModalCek();
     }
 
-    // Logic Cek Antrian
+   // Logic Cek Antrian (KODE ASLI KAMU + ANTI MENTAL)
     document.getElementById('formCekAntrian').onsubmit = async (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Menahan agar tidak refresh halaman
+
         const nik = document.getElementById('inputNik').value;
         const hasilDiv = document.getElementById('hasilCek');
         const btn = document.getElementById('btnCari');
+
+        // JIKA SEDANG MENAMPILKAN HASIL, TOMBOL UTAMA BERUBAH JADI TOMBOL RESET (ANTI MENTAL)
+        if (btn.innerText.includes('Kembali') || !hasilDiv.classList.contains('hidden')) {
+            hasilDiv.classList.add('hidden');
+            hasilDiv.innerHTML = '';
+            document.getElementById('inputNik').value = '';
+            btn.innerText = 'Cari Data Antrian';
+            return; // Berhenti di sini, gak bakal mental ke server
+        }
+
         btn.innerText = 'Mencari...';
         btn.disabled = true;
+
         try {
             const response = await fetch(`/cek-antrian?nik=${nik}`);
             const data = await response.json();
             hasilDiv.classList.remove('hidden');
+
             if (data.success) {
-                hasilDiv.innerHTML = `
+                // Tampilkan info antrian asli kamu
+                let innerHtmlData = `
                     <div class="text-center">
                         <p class="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Nomor Antrian</p>
                         <div class="text-5xl font-black text-maroon-dark my-1">${data.nomor_antrian}</div>
                         <div class="h-[1px] bg-maroon-dark/10 my-3 w-full"></div>
                         <p class="text-sm font-bold text-gray-800">${data.nama}</p>
-                        <p class="text-[11px] text-gray-500">${data.layanan}</p>
+                        <p class="text-[11px] text-gray-500 mb-3">${data.layanan}</p>
                     </div>
                 `;
+
+                // Form Review Pelayanan Berbasis AJAX (Jika Selesai)
+                if (data.dokumen !== null && data.dokumen !== undefined) {
+                    innerHtmlData += `
+                        <div class="mt-4 pt-4 border-t border-dashed border-gray-200 text-left">
+                            <p class="text-xs font-bold text-center text-green-700 bg-green-50 py-1 rounded-full mb-3">✨ Pelayanan Selesai. Yuk Isi Ulasan!</p>
+                            <div id="reviewAlert" class="hidden mb-2 p-2 text-[11px] text-center rounded-xl"></div>
+                            <form id="formReviewAjax" class="space-y-3">
+                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                <input type="hidden" name="nik" value="${nik}">
+                                <div>
+                                    <label class="block text-[11px] font-bold text-gray-500 uppercase mb-1">Rating</label>
+                                    <select name="rating" required class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 bg-white outline-none">
+                                        <option value="5">⭐⭐⭐⭐⭐ (Sangat Puas)</option>
+                                        <option value="4">⭐⭐⭐⭐ (Puas)</option>
+                                        <option value="3">⭐⭐⭐ (Cukup)</option>
+                                        <option value="2">⭐⭐ (Kurang Puas)</option>
+                                        <option value="1">⭐ (Buruk)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-gray-500 uppercase mb-1">Komentar / Saran</label>
+                                    <textarea name="komentar" rows="2" class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 outline-none" placeholder="Masukkan masukan Anda..."></textarea>
+                                </div>
+                                <button type="submit" id="btnKirimReview" class="w-full bg-green-600 text-white py-2 rounded-xl text-xs font-bold hover:bg-green-700 transition-all cursor-pointer">
+                                    Kirim Ulasan Pelayanan
+                                </button>
+                            </form>
+                        </div>
+                    `;
+                } else {
+                    innerHtmlData += `
+                        <div class="mt-3 p-2 bg-yellow-50 text-yellow-800 text-[11px] rounded-xl text-center border border-yellow-100">
+                            ℹ️ Ulasan terbuka otomatis setelah pelayanan Anda dinyatakan "Selesai".
+                        </div>
+                    `;
+                }
+
+                hasilDiv.innerHTML = innerHtmlData;
+
+                // Ubah teks tombol utama biar user tahu kalau ditekan lagi fungsinya untuk kembali
+                btn.innerText = 'Kembali / Cek NIK Lain';
+
+                // Eksekusi Submit Review AJAX
+                if (data.dokumen !== null && data.dokumen !== undefined) {
+                    document.getElementById('formReviewAjax').onsubmit = async (eEvent) => {
+                        eEvent.preventDefault(); // Biar kirim ulasan gak mental juga
+                        const btnReview = document.getElementById('btnKirimReview');
+                        const alertReview = document.getElementById('reviewAlert');
+                        btnReview.innerText = 'Mengirim...';
+                        btnReview.disabled = true;
+
+                        try {
+                            const resReview = await fetch(`{{ route('review.store') }}`, {
+                                method: 'POST',
+                                body: new FormData(eEvent.target),
+                                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                            });
+                            const resData = await resReview.json();
+                            alertReview.classList.remove('hidden', 'bg-red-50', 'text-red-700');
+                            alertReview.classList.add('bg-green-50', 'text-green-700');
+                            alertReview.innerText = '✨ Ulasan berhasil dikirim! Terima kasih.';
+                            document.getElementById('formReviewAjax').reset();
+                        } catch (err) {
+                            alertReview.classList.remove('hidden', 'bg-green-50', 'text-green-700');
+                            alertReview.classList.add('bg-red-50', 'text-red-700');
+                            alertReview.innerText = '⚠️ Gagal mengirim ulasan.';
+                        } finally {
+                            btnReview.innerText = 'Kirim Ulasan Pelayanan';
+                            btnReview.disabled = false;
+                        }
+                    };
+                }
             } else {
                 hasilDiv.innerHTML = `<p class="text-red-500 text-center font-bold text-sm">${data.message}</p>`;
+                btn.innerText = 'Kembali';
             }
         } catch (error) {
             hasilDiv.classList.remove('hidden');
             hasilDiv.innerHTML = `<p class="text-red-500 text-center text-sm font-bold">Koneksi bermasalah.</p>`;
+            btn.innerText = 'Kembali';
         } finally {
-            btn.innerText = 'Cari Data Antrian';
-            btn.disabled = false;
+            btn.disabled = false; // Tombol aktif lagi untuk diklik sebagai tombol kembali
         }
     };
 

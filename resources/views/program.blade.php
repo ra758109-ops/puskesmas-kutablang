@@ -10,12 +10,12 @@
         <span class="text-teal-400 font-bold tracking-widest uppercase text-xs">Inovasi & Kegiatan</span>
         <h1 class="text-4xl md:text-5xl font-extrabold mt-2 mb-4">Program Kesehatan Masyarakat</h1>
         <p class="text-slate-300 max-w-2xl mx-auto text-sm leading-relaxed">
-            Ikuti berbagai program promosi kesehatan dan pencegahan penyakit yang diselenggarakan oleh Puskesmas Kutablang untuk mewujudkan masyarakat yang sehat dan produktif.
+            Ikuti berbagai program promosi kesehatan dan pencegahan penyakit yang diselenggarakan oleh Puskesmas Kutablang untuk mewujudkan masyarakat yang sehat and produktif.
         </p>
     </div>
 </section>
 
-{{-- SECTION KARTU STATISTIK (PRESET_DATA SEPERTI GAMBAR KEDUA) --}}
+{{-- SECTION KARTU STATISTIK MURNI RIIL --}}
 <section class="pt-16 pb-8 bg-gray-50">
     <div class="container mx-auto px-4">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
@@ -23,21 +23,21 @@
             {{-- Kartu 1 --}}
             <div class="bg-white rounded-[30px] p-8 text-center shadow-[0_15px_30px_rgba(0,0,0,0.05)] border-b-[6px] border-maroon-dark transition-transform hover:-translate-y-2 duration-300">
                 <span class="text-xs font-black tracking-widest text-slate-400 uppercase">Imunisasi Dasar</span>
-                <div class="text-4xl font-black text-maroon-dark my-2 tracking-tight">95%</div>
-                <p class="text-xs text-slate-400 italic">Capaian Tahun 2025</p>
+                <div class="text-4xl font-black text-maroon-dark my-2 tracking-tight">{{ $capaianImunisasi }}</div>
+                <p class="text-xs text-slate-400 italic">Total Pasien Terdaftar</p>
             </div>
 
             {{-- Kartu 2 --}}
             <div class="bg-white rounded-[30px] p-8 text-center shadow-[0_15px_30px_rgba(0,0,0,0.05)] border-b-[6px] border-maroon-dark transition-transform hover:-translate-y-2 duration-300">
                 <span class="text-xs font-black tracking-widest text-slate-400 uppercase">Gizi Baik Balita</span>
-                <div class="text-4xl font-black text-teal-500 my-2 tracking-tight">92%</div>
-                <p class="text-xs text-slate-400 italic">Kesehatan Anak</p>
+                <div class="text-4xl font-black text-teal-500 my-2 tracking-tight">{{ $giziBaikBalita }}</div>
+                <p class="text-xs text-slate-400 italic">Total Pasien Anak</p>
             </div>
 
             {{-- Kartu 3 --}}
             <div class="bg-white rounded-[30px] p-8 text-center shadow-[0_15px_30px_rgba(0,0,0,0.05)] border-b-[6px] border-maroon-dark transition-transform hover:-translate-y-2 duration-300">
                 <span class="text-xs font-black tracking-widest text-slate-400 uppercase">Peserta Prolanis</span>
-                <div class="text-4xl font-black text-orange-400 my-2 tracking-tight">180</div>
+                <div class="text-4xl font-black text-orange-400 my-2 tracking-tight">{{ $pesertaProlanis }}</div>
                 <p class="text-xs text-slate-400 italic">Anggota Aktif</p>
             </div>
 
