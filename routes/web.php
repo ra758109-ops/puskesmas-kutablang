@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PasienController;
 use App\Http\Controllers\Admin\DokterController;
 use App\Http\Controllers\Admin\AdminProgramController as AdminProgramController;
+use App\Http\Controllers\ReviewController;
 
 // ==========================================
 // HALAMAN USER / PENGUNJUNG
@@ -38,6 +39,8 @@ Route::get('/program', [ProgramController::class, 'index'])->name('program.index
 Route::get('/berita', [BeritaController::class, 'indexPublik'])->name('public.berita');
 Route::get('/berita/{slug}', [BeritaController::class, 'show'])->name('public.berita.detail');
 
+// Review/Ulasan Pasien
+Route::post('/review/store', [ReviewController::class, 'store'])->name('review.store');
 
 // ==========================================
 // PENDAFTARAN ONLINE (SINKRON DENGAN AJAX BLADE)
