@@ -9,7 +9,7 @@ class AuthController extends Controller
 {
     // Menampilkan halaman login
     public function showLogin() {
-        return view('login'); // Pastikan kamu sudah buat file resources/views/auth/login.blade.php
+        return view('login'); 
     }
 
     // Proses login
