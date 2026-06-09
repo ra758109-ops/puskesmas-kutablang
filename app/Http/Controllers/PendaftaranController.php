@@ -24,7 +24,7 @@ class PendaftaranController extends Controller
             'jenis_kelamin' => 'required',
             'nomor_hp' => 'required|numeric',
             'alamat' => 'required|string',
-            'poli_id' => 'required|exists:polis,id', 
+            'poli_id' => 'required|exists:polis,id',
             'dokter_id' => 'required|exists:dokters,id',
             'tanggal_lahir' => 'required|date',
             'keluhan' => 'required|string', // 🚀 FIX: Mencegah error database kosong
@@ -35,12 +35,12 @@ class PendaftaranController extends Controller
         $poli = Poli::find($request->poli_id);
 
         // 3. LOGIKA NOMOR ANTRIAN DINAMIS (Contoh: Gigi = G-001, Anak = A-001)
-        $prefix = strtoupper(substr($poli->nama_poli, 0, 1)); 
+        $prefix = strtoupper(substr($poli->nama_poli, 0, 1));
 
         $count = Pasien::where('jenis_layanan', $poli->nama_poli)
                        ->whereDate('created_at', date('Y-m-d'))
                        ->count();
-                       
+
         $no_antrian = $prefix . '-' . str_pad($count + 1, 3, '0', STR_PAD_LEFT);
 
         // 4. Proses Simpan File Dokumen
@@ -58,12 +58,12 @@ class PendaftaranController extends Controller
             'nomor_hp' => $request->nomor_hp,
             'alamat' => $request->alamat,
             'jenis_layanan' => $poli->nama_poli,
-            'dokter_id' => $request->dokter_id, 
+            'dokter_id' => $request->dokter_id,
             'keluhan' => $request->keluhan,
             'nomor_antrian' => $no_antrian,
             'dokumen' => $path_dokumen,
             'tanggal_daftar' => now(),
-            'status' => 'Mengantri' 
+            'status' => 'Mengantri'
         ]);
 
         return redirect()->back()->with([
@@ -75,28 +75,27 @@ class PendaftaranController extends Controller
     public function cekAntrian(Request $request)
     {
         $pasien = Pasien::where('nik', $request->nik)->first();
-        
+
         if ($pasien) {
-            // 🚀 FIX: Sekarang data dokumen dan status ikut dikirim agar JavaScript tidak bingung
+            // 🚀 FIX REAL: Mengembalikan data status yang jujur dari DB agar AJAX Review tidak konflik
             return response()->json([
                 'success' => true,
                 'nama' => $pasien->nama,
                 'nomor_antrian' => $pasien->nomor_antrian,
                 'layanan' => $pasien->jenis_layanan,
-                'dokumen' => $pasien->dokumen, // Dibaca JS untuk cek file berkas
-                'status' => $pasien->status    // Dibaca JS untuk cek status Selesai/Mengantri
+                'status' => $pasien->status    // Membaca status riil ('Mengantri' / 'Selesai')
             ]);
         }
-        
+
         return response()->json(['success' => false, 'message' => 'Data NIK tidak ditemukan.']);
     }
 
     public function getDokter($poli_id)
     {
         $dokters = Dokter::where('poli_id', $poli_id)
-                         ->where('is_aktif', 1) 
+                         ->where('is_aktif', 1)
                          ->get();
-                         
+
         return response()->json($dokters);
     }
 }

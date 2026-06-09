@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Dokter;
 use App\Models\Poli;
 use App\Models\Service;
-use App\Models\Program; 
-use App\Models\Berita; // 
+use App\Models\Program;
+use App\Models\Berita;
 
 class HomeController extends Controller
 {
@@ -23,9 +23,9 @@ class HomeController extends Controller
         $dokters = Dokter::with('poli')->latest()->take(8)->get();
 
         // 4. Ambil data program asli dari database
-        $programs = Program::latest()->take(3)->get(); 
+        $programs = Program::latest()->take(3)->get();
 
-        // 5. 🚀 AMBIL DATA BERITA TERBARU (Maksimal 3 artikel)
+        // 5. AMBIL DATA BERITA TERBARU (Maksimal 3 artikel)
         $beritas = Berita::latest()->take(3)->get();
 
         // Kirim seluruh variabel termasuk $beritas ke view beranda
@@ -35,7 +35,7 @@ class HomeController extends Controller
     // ==========================================
     // FUNGSI UNTUK HALAMAN JADWAL USER PUBLIK
     // ==========================================
-    public function jadwal() 
+    public function jadwal()
     {
         $dokters = Dokter::with('poli')->get();
         return view('jadwal', compact('dokters'));

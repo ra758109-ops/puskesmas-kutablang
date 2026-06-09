@@ -1,21 +1,21 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PendaftaranController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ProgramController;
-use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\JadwalController;
-use App\Http\Controllers\Admin\BeritaController;
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\PasienController;
-use App\Http\Controllers\Admin\DokterController;
-use App\Http\Controllers\Admin\AdminProgramController as AdminProgramController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\ProgramController;
+use App\Http\Controllers\PendaftaranController;
+use App\Http\Controllers\Admin\DokterController;
+use App\Http\Controllers\Admin\PasienController;
+use App\Http\Controllers\Admin\BeritaController;
+use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\AdminProgramController;
 
 // ==========================================
-// HALAMAN USER / PENGUNJUNG
+// HALAMAN USER / PENGUNJUNG PUBLIK
 // ==========================================
 
 // Beranda
@@ -26,49 +26,55 @@ Route::get('/profil', function () {
     return view('profil');
 });
 
-// Layanan Publik
-// 🔄 KEMBALI KE SEMULA: Menggunakan index() karena controller kamu sudah punya pendeteksi request()->routeIs()
-Route::get('/layanan', [ServiceController::class, 'index'])->name('layanan.index');
-
-// Jadwal Praktik Dokter/Nakes
+// Jadwal Praktik
 Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
 
-// Program Kegiatan
+// Layanan & Program Publik
+Route::get('/layanan', [ServiceController::class, 'index'])->name('layanan.index');
 Route::get('/program', [ProgramController::class, 'index'])->name('program.index');
 
 // Berita Publik
 Route::get('/berita', [BeritaController::class, 'indexPublik'])->name('public.berita');
 Route::get('/berita/{slug}', [BeritaController::class, 'show'])->name('public.berita.detail');
 
-// Review/Ulasan Pasien
-Route::post('/review/store', [ReviewController::class, 'store'])->name('review.store');
 
 // ==========================================
-// PENDAFTARAN ONLINE (SINKRON DENGAN AJAX BLADE)
+// FITUR INTERAKTIF USER (AJAX)
 // ==========================================
+
+// Pendaftaran Online
 Route::get('/pendaftaran', [PendaftaranController::class, 'index'])->name('pendaftaran.index');
 Route::post('/pendaftaran', [PendaftaranController::class, 'store'])->name('pendaftaran.store');
+
+// Cek Antrean
 Route::get('/pendaftaran/cek', [PendaftaranController::class, 'cekAntrian'])->name('pendaftaran.cek');
+
+// Ambil Data Dokter Berdasarkan Poli
 Route::get('/get-dokter/{poli_id}', [PendaftaranController::class, 'getDokter']);
 
+// Kirim Review/Ulasan
+Route::post('/review/store', [ReviewController::class, 'store'])->name('review.store');
+
 
 // ==========================================
-// AUTH LOGIN
+// AUTH SYSTEM (LOGIN / LOGOUT)
 // ==========================================
+
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'processLogin']);
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
 // ==========================================
-// AREA ADMIN (TERPROTEKSI AUTH)
+// AREA ADMIN
 // ==========================================
+
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
 
-    // Dashboard Utama
+    // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // CRUD LAYANAN
+    // CRUD Layanan
     Route::prefix('layanan')->name('services.')->group(function () {
         Route::get('/', [ServiceController::class, 'index'])->name('index');
         Route::get('/create', [ServiceController::class, 'create'])->name('create');
@@ -78,7 +84,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::delete('/{id}', [ServiceController::class, 'destroy'])->name('destroy');
     });
 
-    // CRUD BERITA
+    // CRUD Berita
     Route::prefix('berita')->name('berita.')->group(function () {
         Route::get('/', [BeritaController::class, 'index'])->name('index');
         Route::get('/create', [BeritaController::class, 'create'])->name('create');
@@ -88,15 +94,18 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::delete('/{id}', [BeritaController::class, 'destroy'])->name('destroy');
     });
 
-    // Resource Dokter & Saklar Kontrol Status Aktif
+    // CRUD Dokter
     Route::resource('dokter', DokterController::class);
-    Route::patch('/dokter/{id}/toggle-status', [DokterController::class, 'toggleStatus'])->name('dokter.toggleStatus');
-    
-    // Resource Pasien & Fitur Tambahannya
+    Route::patch('/dokter/{id}/toggle-status', [DokterController::class, 'toggleStatus'])
+        ->name('dokter.toggleStatus');
+
+    // CRUD Pasien
     Route::resource('pasien', PasienController::class);
-    Route::patch('/pasien/{id}/status/{status}', [PasienController::class, 'updateStatus'])->name('pasien.update-status');
-    Route::get('/pasien/{id}/wa-review', [PasienController::class, 'sendWaReview'])->name('pasien.wa-review');
-    
-    // Resource Program Admin
+    Route::patch('/pasien/{id}/status/{status}', [PasienController::class, 'updateStatus'])
+        ->name('pasien.update-status');
+    Route::get('/pasien/{id}/wa-review', [PasienController::class, 'sendWaReview'])
+        ->name('pasien.wa-review');
+
+    // CRUD Program
     Route::resource('program', AdminProgramController::class);
 });
