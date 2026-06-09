@@ -21,11 +21,11 @@
             <i class="fa-solid fa-layer-plus animate-bounce"></i> Management Control
         </div>
         <h2 class="text-3xl font-black text-gray-950 tracking-tight">
-            Tambah <span class="bg-gradient-to-r from-maroon-dark to-rose-700 bg-clip-text text-transparent">Layanan / Poli</span> Baru
+            Tambah <span class="bg-gradient-to-r from-maroon-dark to-rose-700 bg-clip-text text-transparent">Poli Layanan</span> Baru
         </h2>
         <p class="text-gray-400 text-xs mt-1.5 font-medium flex items-center gap-2">
             <span class="w-8 h-[2px] bg-maroon-dark/20 rounded-full"></span>
-            Konfigurasi unit poli klinis dan modifikasi visual beranda depan Puskesmas.
+            Konfigurasi unit poli klinis dan modifikasi visual gambar depan Puskesmas.
         </p>
     </div>
 
@@ -35,7 +35,8 @@
         {{-- Garis Aksen Top Bar --}}
         <div class="absolute top-0 inset-x-0 h-[5px] bg-gradient-to-r from-amber-500 via-maroon-dark to-rose-600"></div>
 
-        <form action="{{ route('admin.services.store') }}" method="POST" id="servicesForm">
+        {{-- 🛠️ UPDATE FORM: Tambah enctype untuk upload file --}}
+        <form action="{{ route('admin.services.store') }}" method="POST" id="servicesForm" enctype="multipart/form-data">
             @csrf
             
             <div class="space-y-7">
@@ -49,36 +50,35 @@
                         <span class="absolute left-5 text-gray-400 group-focus-within:text-maroon-dark transition-colors duration-300">
                             <i class="fa-solid fa-hospital-user text-base"></i>
                         </span>
-                        <input type="text" name="nama_layanan" required placeholder="Contoh: Poli KIA, Poli Gigi & Mulut" 
+                        <input type="text" name="nama_poli" required placeholder="Contoh: Poli KIA, Poli Gigi & Mulut" 
                             class="w-full pl-12 pr-5 py-4 bg-gray-50/50 border border-gray-200/60 rounded-2xl focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all duration-300 text-sm font-semibold text-gray-800 shadow-inner focus:bg-white">
                     </div>
                 </div>
 
-                {{-- 2. INPUT IKON + LIVE PREVIEW JAVASCRIPT --}}
+                {{-- 2. 🛠️ UPDATE: INPUT INPUT GAMBAR + LIVE PREVIEW --}}
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
                     <div class="space-y-1.5 md:col-span-9 group">
                         <label class="text-[11px] font-black text-gray-500 uppercase tracking-widest block ml-1 group-focus-within:text-maroon-dark transition-colors duration-300">
-                            Ikon Layanan (FontAwesome Class)
+                            Gambar / Foto Sampul Layanan
                         </label>
                         <div class="relative flex items-center">
                             <span class="absolute left-5 text-gray-400 group-focus-within:text-maroon-dark transition-colors duration-300">
-                                <i class="fa-solid fa-code text-sm"></i>
+                                <i class="fa-solid fa-image text-sm"></i>
                             </span>
-                            <input type="text" name="ikon" id="iconInput" required placeholder="fa-solid fa-heart-pulse" 
-                                class="w-full pl-12 pr-5 py-4 bg-gray-50/50 border border-gray-200/60 rounded-2xl focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all duration-300 text-sm font-semibold text-gray-800 shadow-inner focus:bg-white font-mono">
+                            <input type="file" name="ikon" id="imageInput" required accept="image/*"
+                                class="w-full pl-12 pr-5 py-3.5 bg-gray-50/50 border border-gray-200/60 rounded-2xl focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all duration-300 text-sm font-semibold text-gray-400 shadow-inner focus:bg-white file:mr-4 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-maroon-dark/10 file:text-maroon-dark hover:file:bg-maroon-dark/20 file:transition-all">
                         </div>
                         <p class="text-[10px] text-gray-400 font-medium ml-1 flex items-center gap-1.5">
                             <i class="fa-solid fa-circle-info text-maroon-dark/50"></i>
-                            Gunakan class resmi versi 6 dari <a href="https://fontawesome.com/search" target="_blank" class="text-maroon-dark font-extrabold hover:underline">fontawesome.com</a>
+                            Gunakan format file gambar asli seperti JPG, PNG, atau SVG (Maksimal 2MB).
                         </p>
                     </div>
 
                     <div class="md:col-span-3 flex flex-col items-center justify-center space-y-2">
                         <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Live Preview</span>
-                        <div class="w-[84px] h-[84px] bg-gradient-to-br from-gray-50 to-gray-100/50 border border-gray-200/60 rounded-2xl text-maroon-dark flex items-center justify-center text-3xl shadow-inner relative overflow-hidden transition-all duration-500 group-hover:scale-105" id="iconPreviewBox">
-                            {{-- Ornamen hiasan di dalam preview --}}
-                            <div class="absolute -right-2 -bottom-2 text-gray-200/20 text-4xl font-black pointer-events-none"><i class="fa-solid fa-shield-halved"></i></div>
-                            <i id="liveIconContainer" class="fa-solid fa-hospital animate-pulse opacity-40"></i>
+                        <div class="w-[84px] h-[84px] bg-gradient-to-br from-gray-50 to-gray-100/50 border border-gray-200/60 rounded-2xl text-maroon-dark flex items-center justify-center shadow-inner relative overflow-hidden transition-all duration-500" id="imagePreviewBox">
+                            <img id="liveImagePreview" src="#" alt="Preview" class="w-full h-full object-cover hidden">
+                            <i id="placeholderIcon" class="fa-solid fa-hospital animate-pulse opacity-40 text-3xl"></i>
                         </div>
                     </div>
                 </div>
@@ -86,10 +86,10 @@
                 {{-- 3. DESKRIPSI SINGKAT --}}
                 <div class="space-y-1.5 group">
                     <label class="text-[11px] font-black text-gray-500 uppercase tracking-widest block ml-1 group-focus-within:text-maroon-dark transition-colors duration-300">
-                        Deskripsi Singkat Layanan
+                        Deskripsi Lengkap Layanan Poli
                     </label>
                     <div class="relative">
-                        <textarea name="deskripsi_singkat" rows="4" required placeholder="Jelaskan secara ringkas mengenai fungsi layanan, cakupan pemeriksaan, atau jam operasional khusus poli ini..." 
+                        <textarea name="deskripsi" rows="4" required placeholder="Jelaskan secara ringkas mengenai fungsi layanan, cakupan pemeriksaan, atau jam operasional khusus poli ini..." 
                             class="w-full p-5 bg-gray-50/50 border border-gray-200/60 rounded-2xl focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all duration-300 text-sm font-semibold text-gray-800 shadow-inner focus:bg-white leading-relaxed resize-none"></textarea>
                     </div>
                 </div>
@@ -117,38 +117,36 @@
 
 <style>
     .custom-services-font { font-family: 'Plus Jakarta Sans', sans-serif; }
-    
-    /* Efek Input Focus Glowing Border Ring */
     .group-focus-within input, .group-focus-within textarea {
         box-shadow: 0 10px 25px -5px rgba(74, 14, 14, 0.05);
     }
 </style>
 
-{{-- JAVASCRIPT: FITUR INTERAKTIF LIVE PREVIEW ICON --}}
+{{-- 🛠️ UPDATE JAVASCRIPT: Menggunakan FileReader/Object URL untuk Pratinjau Gambar Asli --}}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const iconInput = document.getElementById('iconInput');
-        const liveIconContainer = document.getElementById('liveIconContainer');
-        const iconPreviewBox = document.getElementById('iconPreviewBox');
+        const imageInput = document.getElementById('imageInput');
+        const liveImagePreview = document.getElementById('liveImagePreview');
+        const placeholderIcon = document.getElementById('placeholderIcon');
+        const imagePreviewBox = document.getElementById('imagePreviewBox');
 
-        iconInput.addEventListener('input', function (e) {
-            let val = e.target.value.trim();
-
-            if (val.length > 3) {
-                // Bersihkan dan pasang class baru ke previewer container
-                liveIconContainer.className = ''; 
+        imageInput.addEventListener('change', function () {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
                 
-                // Masukkan class inputan user (contoh: fas fa-heart atau fa-solid fa-user)
-                liveIconContainer.className = val + ' transition-all duration-300 scale-110';
-                liveIconContainer.style.opacity = '1';
+                reader.addEventListener('load', function () {
+                    liveImagePreview.setAttribute('src', this.result);
+                    liveImagePreview.classList.remove('hidden');
+                    placeholderIcon.classList.add('hidden');
+                    imagePreviewBox.className = 'w-[84px] h-[84px] bg-gradient-to-br from-neutral-50 to-neutral-100 border border-maroon-dark/20 rounded-2xl flex items-center justify-center shadow-lg relative overflow-hidden transition-all duration-500';
+                });
                 
-                // Tambahkan estetika glow pada preview box saat ikon valid
-                iconPreviewBox.className = 'w-[84px] h-[84px] bg-gradient-to-br from-maroon-dark to-rose-950 border border-maroon-dark/20 rounded-2xl text-white flex items-center justify-center text-3xl shadow-lg shadow-maroon-dark/20 relative overflow-hidden transition-all duration-500';
+                reader.readAsDataURL(file);
             } else {
-                // Kembalikan ke model placeholder bawaan jika input kosong
-                liveIconContainer.className = 'fa-solid fa-hospital animate-pulse';
-                liveIconContainer.style.opacity = '0.4';
-                iconPreviewBox.className = 'w-[84px] h-[84px] bg-gradient-to-br from-gray-50 to-gray-100/50 border border-gray-200/60 rounded-2xl text-maroon-dark flex items-center justify-center text-3xl shadow-inner relative overflow-hidden transition-all duration-500';
+                liveImagePreview.classList.add('hidden');
+                placeholderIcon.classList.remove('hidden');
+                imagePreviewBox.className = 'w-[84px] h-[84px] bg-gradient-to-br from-gray-50 to-gray-100/50 border border-gray-200/60 rounded-2xl text-maroon-dark flex items-center justify-center shadow-inner relative overflow-hidden transition-all duration-500';
             }
         });
     });

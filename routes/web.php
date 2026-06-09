@@ -27,6 +27,7 @@ Route::get('/profil', function () {
 });
 
 // Layanan Publik
+// 🔄 KEMBALI KE SEMULA: Menggunakan index() karena controller kamu sudah punya pendeteksi request()->routeIs()
 Route::get('/layanan', [ServiceController::class, 'index'])->name('layanan.index');
 
 // Jadwal Praktik Dokter/Nakes
@@ -47,7 +48,6 @@ Route::post('/review/store', [ReviewController::class, 'store'])->name('review.s
 // ==========================================
 Route::get('/pendaftaran', [PendaftaranController::class, 'index'])->name('pendaftaran.index');
 Route::post('/pendaftaran', [PendaftaranController::class, 'store'])->name('pendaftaran.store');
-// 🚀 FIX: Nama route diubah dari 'cek.antrian' menjadi 'pendaftaran.cek' agar sesuai dengan AJAX di Blade
 Route::get('/pendaftaran/cek', [PendaftaranController::class, 'cekAntrian'])->name('pendaftaran.cek');
 Route::get('/get-dokter/{poli_id}', [PendaftaranController::class, 'getDokter']);
 
@@ -97,6 +97,6 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::patch('/pasien/{id}/status/{status}', [PasienController::class, 'updateStatus'])->name('pasien.update-status');
     Route::get('/pasien/{id}/wa-review', [PasienController::class, 'sendWaReview'])->name('pasien.wa-review');
     
-    // Resource Program Admin (Gunakan alias yang di-import di atas)
+    // Resource Program Admin
     Route::resource('program', AdminProgramController::class);
 });
