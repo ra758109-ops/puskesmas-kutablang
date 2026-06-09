@@ -77,7 +77,6 @@
 </section>
 
 {{-- SECTION DOKTER --}}
-=======
 <section class="py-20 bg-white">
     <div class="container mx-auto px-4">
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
@@ -99,18 +98,20 @@
                 <button onclick="filterDokter('{{ $p->nama_poli }}')" class="filter-btn px-6 py-2 rounded-full border-2 border-gray-200 text-gray-500 text-sm font-bold hover:border-maroon-dark hover:text-maroon-dark transition-all">
                     {{ $p->nama_poli }}
                 </button>
-                @endforeach
+                @endforeach {{-- 🚀 FIX: Perulangan ganda bawaan kawanmu sudah dimusnahkan --}}
             </div>
         </div>
 
         <div id="doctor-wrapper" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             @php $doktersAktif = collect($dokters ?? [])->where('is_aktif', 1); @endphp
-            
+
             @foreach($doktersAktif as $dokter)
             <div class="doctor-card group" data-aos="zoom-in" data-specialty="{{ $dokter->poli->nama_poli ?? 'Umum' }}">
                 <div class="relative overflow-hidden rounded-[40px] mb-4 shadow-lg bg-slate-100">
                     @if($dokter->foto && file_exists(public_path('uploads/dokter/' . $dokter->foto)))
                         <img src="{{ asset('uploads/dokter/' . $dokter->foto) }}" alt="{{ $dokter->nama_dokter }}" class="w-full h-[350px] object-cover group-hover:scale-110 transition-transform duration-700">
+                    @elseif($dokter->foto && file_exists(public_path('storage/dokter/' . $dokter->foto)))
+                        <img src="{{ asset('storage/dokter/' . $dokter->foto) }}" alt="{{ $dokter->nama_dokter }}" class="w-full h-[350px] object-cover group-hover:scale-110 transition-transform duration-700">
                     @else
                         <div class="w-full h-[350px] flex items-center justify-center bg-slate-200 text-slate-400">
                             <i class="fas fa-user-md text-6xl"></i>
@@ -142,11 +143,11 @@
             @forelse($programs ?? [] as $program)
             <div class="bg-white rounded-[40px] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 group border border-gray-100">
                 <div class="relative h-64 overflow-hidden bg-gradient-to-br from-maroon-dark to-rose-950 flex items-center justify-center">
-                    
+
                     @if($program->gambar && (file_exists(public_path('uploads/program/' . $program->gambar)) || file_exists(public_path('uploads/' . $program->gambar))))
                         @php
-                            $pathProgramImg = file_exists(public_path('uploads/program/' . $program->gambar)) 
-                                ? asset('uploads/program/' . $program->gambar) 
+                            $pathProgramImg = file_exists(public_path('uploads/program/' . $program->gambar))
+                                ? asset('uploads/program/' . $program->gambar)
                                 : asset('uploads/' . $program->gambar);
                         @endphp
                         <img src="{{ $pathProgramImg }}" alt="{{ $program->nama_program }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
@@ -188,7 +189,7 @@
     </div>
 </section>
 
-{{-- 🚀 BARU: SECTION BERITA & EDUKASI KESEHATAN --}}
+{{-- SECTION BERITA & EDUKASI KESEHATAN --}}
 <section id="berita-section" class="py-20 bg-white">
     <div class="container mx-auto px-4">
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
@@ -205,14 +206,12 @@
             @forelse($beritas ?? [] as $index => $berita)
             <div class="bg-white rounded-[40px] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 group border border-gray-100" data-aos="fade-up" data-aos-delay="{{ $index * 100 }}">
                 <div class="relative h-56 overflow-hidden bg-gradient-to-br from-maroon-dark to-rose-950 flex items-center justify-center">
-                    
-                    {{-- Cek ketersediaan gambar/foto artikel berita --}}
+
                     @if(isset($berita->foto) && $berita->foto && file_exists(public_path('uploads/berita/' . $berita->foto)))
                         <img src="{{ asset('uploads/berita/' . $berita->foto) }}" alt="{{ $berita->judul }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
                     @elseif(isset($berita->gambar) && $berita->gambar && file_exists(public_path('uploads/berita/' . $berita->gambar)))
                         <img src="{{ asset('uploads/berita/' . $berita->gambar) }}" alt="{{ $berita->judul }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
                     @else
-                        {{-- Fallback jika tidak ada gambar --}}
                         <div class="text-white font-black text-5xl tracking-wider opacity-20 uppercase select-none">
                             {{ strtoupper(substr($berita->judul ?? 'NW', 0, 2)) }}
                         </div>
@@ -224,25 +223,22 @@
                         </span>
                     </div>
                 </div>
-                
+
                 <div class="p-8">
                     <h3 class="text-xl font-bold text-maroon-dark mb-3 group-hover:text-teal-600 transition-colors line-clamp-2 min-h-[3.5rem] leading-snug">
                         <a href="{{ route('public.berita.detail', $berita->slug) }}">
                             {{ $berita->judul }}
                         </a>
                     </h3>
-                    
+
                     <p class="text-gray-500 text-sm leading-relaxed mb-6 line-clamp-3">
                         {{ strip_tags($berita->konten ?? $berita->isi ?? 'Klik baca selengkapnya untuk mendapatkan informasi detail terkait edukasi kesehatan ini.') }}
                     </p>
-                    
+
                     <div class="flex items-center justify-between border-t border-gray-50 pt-4">
                         <div class="flex flex-col">
                             <span class="text-xs text-gray-400 font-medium">
                                 <i class="far fa-calendar-alt mr-1.5"></i>{{ $berita->created_at ? $berita->created_at->format('d M Y') : now()->format('d M Y') }}
-                            </span>
-                            <span class="text-[10px] text-gray-400 italic">
-                                {{ $berita->created_at ? $berita->created_at->diffForHumans() : '' }}
                             </span>
                         </div>
                         <a href="{{ route('public.berita.detail', $berita->slug) }}" class="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-maroon-dark hover:text-teal-600 transition-colors">
@@ -298,7 +294,6 @@
 </style>
 
 <script>
-    // Modal Functions
     function openModalCek() {
         document.getElementById('modalCek').classList.remove('hidden');
         document.getElementById('hasilCek').classList.add('hidden');
@@ -312,33 +307,30 @@
         if (event.target == modal) closeModalCek();
     }
 
-   // Logic Cek Antrian (KODE ASLI KAMU + ANTI MENTAL)
     document.getElementById('formCekAntrian').onsubmit = async (e) => {
-        e.preventDefault(); // Menahan agar tidak refresh halaman
+        e.preventDefault();
 
         const nik = document.getElementById('inputNik').value;
         const hasilDiv = document.getElementById('hasilCek');
         const btn = document.getElementById('btnCari');
 
-        // JIKA SEDANG MENAMPILKAN HASIL, TOMBOL UTAMA BERUBAH JADI TOMBOL RESET (ANTI MENTAL)
         if (btn.innerText.includes('Kembali') || !hasilDiv.classList.contains('hidden')) {
             hasilDiv.classList.add('hidden');
             hasilDiv.innerHTML = '';
             document.getElementById('inputNik').value = '';
             btn.innerText = 'Cari Data Antrian';
-            return; // Berhenti di sini, gak bakal mental ke server
+            return;
         }
 
         btn.innerText = 'Mencari...';
         btn.disabled = true;
 
         try {
-            const response = await fetch(`/cek-antrian?nik=${nik}`);
+            const response = await fetch(`/pendaftaran/cek?nik=${nik}`);
             const data = await response.json();
             hasilDiv.classList.remove('hidden');
 
             if (data.success) {
-                // Tampilkan info antrian asli kamu
                 let innerHtmlData = `
                     <div class="text-center">
                         <p class="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Nomor Antrian</p>
@@ -349,8 +341,8 @@
                     </div>
                 `;
 
-                // Form Review Pelayanan Berbasis AJAX (Jika Selesai)
-                if (data.dokumen !== null && data.dokumen !== undefined) {
+                // 🚀 FIX REAL: Hanya membaca data status 'Selesai' agar tidak bentrok data berkas pendaftaran
+                if (data.status === 'Selesai') {
                     innerHtmlData += `
                         <div class="mt-4 pt-4 border-t border-dashed border-gray-200 text-left">
                             <p class="text-xs font-bold text-center text-green-700 bg-green-50 py-1 rounded-full mb-3">✨ Pelayanan Selesai. Yuk Isi Ulasan!</p>
@@ -370,7 +362,7 @@
                                 </div>
                                 <div>
                                     <label class="block text-[11px] font-bold text-gray-500 uppercase mb-1">Komentar / Saran</label>
-                                    <textarea name="komentar" rows="2" class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 outline-none" placeholder="Masukkan masukan Anda..."></textarea>
+                                    <textarea name="komentar" rows="2" class="w-full px-3 py-2 text-xs rounded-xl border border-gray-200 outline-none" placeholder="Masukkan ulasan Anda..."></textarea>
                                 </div>
                                 <button type="submit" id="btnKirimReview" class="w-full bg-green-600 text-white py-2 rounded-xl text-xs font-bold hover:bg-green-700 transition-all cursor-pointer">
                                     Kirim Ulasan Pelayanan
@@ -387,14 +379,11 @@
                 }
 
                 hasilDiv.innerHTML = innerHtmlData;
-
-                // Ubah teks tombol utama biar user tahu kalau ditekan lagi fungsinya untuk kembali
                 btn.innerText = 'Kembali / Cek NIK Lain';
 
-                // Eksekusi Submit Review AJAX
-                if (data.dokumen !== null && data.dokumen !== undefined) {
+                if (document.getElementById('formReviewAjax')) {
                     document.getElementById('formReviewAjax').onsubmit = async (eEvent) => {
-                        eEvent.preventDefault(); // Biar kirim ulasan gak mental juga
+                        eEvent.preventDefault();
                         const btnReview = document.getElementById('btnKirimReview');
                         const alertReview = document.getElementById('reviewAlert');
                         btnReview.innerText = 'Mengirim...';
@@ -422,19 +411,18 @@
                     };
                 }
             } else {
-                hasilDiv.innerHTML = `<p class="text-red-500 text-center font-bold text-sm">${data.message}</p>`;
+                hasilDiv.innerHTML = `<p class="text-red-500 text-center font-bold text-sm">${data.message || 'Data tidak ditemukan.'}</p>`;
                 btn.innerText = 'Kembali';
             }
         } catch (error) {
             hasilDiv.classList.remove('hidden');
-            hasilDiv.innerHTML = `<p class="text-red-500 text-center text-sm font-bold">Koneksi bermasalah.</p>`;
+            hasilDiv.innerHTML = `<p class="text-red-500 text-center text-sm font-bold">Koneksi bermasalah atau data kosong.</p>`;
             btn.innerText = 'Kembali';
         } finally {
-            btn.disabled = false; // Tombol aktif lagi untuk diklik sebagai tombol kembali
+            btn.disabled = false;
         }
     };
 
-    // Logic Filter Dokter
     function filterDokter(category) {
         const buttons = document.querySelectorAll('.filter-btn');
         buttons.forEach(btn => {
