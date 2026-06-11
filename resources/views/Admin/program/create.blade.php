@@ -18,7 +18,7 @@
     {{-- MAIN CARD FORM --}}
     <div class="bg-white rounded-[2.8rem] p-8 md:p-11 shadow-[0_25px_60px_rgba(74,14,14,0.03)] border border-gray-100/80 relative overflow-hidden z-10 animate__animated animate__fadeInUp">
         
-        {{-- Garis Aksen Top Bar (Menyesuaikan warna tema maroon kamu) --}}
+        {{-- Garis Aksen Top Bar --}}
         <div class="absolute top-0 inset-x-0 h-[6px] bg-gradient-to-r from-amber-500 via-maroon-dark to-rose-600"></div>
 
         {{-- HEADER --}}
@@ -30,8 +30,8 @@
             <p class="text-gray-400 text-xs mt-1">Buat program kesehatan baru untuk ditampilkan di halaman depan publik.</p>
         </div>
 
-        {{-- FORM ACTION --}}
-        <form action="{{ route('admin.program.store') }}" method="POST">
+        {{-- FORM ACTION (🚀 FIX: Menambahkan enctype="multipart/form-data") --}}
+        <form action="{{ route('admin.program.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             
             <div class="space-y-6">
@@ -62,16 +62,25 @@
                     <textarea name="deskripsi" rows="3" required class="w-full p-5 bg-gray-50/50 border border-gray-200/60 rounded-2xl focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all duration-300 text-sm font-semibold text-gray-800 focus:bg-white leading-relaxed resize-none" placeholder="Jelaskan secara garis besar tujuan program kerja kesehatan ini..."></textarea>
                 </div>
 
+                {{-- 🚀 FIX TAMBAHAN: 4. INPUT FILE GAMBAR (Desain diselaraskan agar rapi) --}}
+                <div class="space-y-1.5 group">
+                    <label class="text-[11px] font-black text-gray-500 uppercase tracking-widest block ml-1 group-focus-within:text-maroon-dark transition-colors duration-300">Gambar Cover Program</label>
+                    <div class="relative flex items-center">
+                        <span class="absolute left-5 text-gray-400 group-focus-within:text-maroon-dark transition-colors duration-300"><i class="fa-solid fa-image text-base"></i></span>
+                        <input type="file" name="gambar" accept="image/*" class="w-full pl-12 pr-5 py-3.5 bg-gray-50/50 border border-gray-200/60 rounded-2xl focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all duration-300 text-sm font-semibold text-gray-500 focus:bg-white file:mr-4 file:py-1.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-rose-50 file:text-maroon-dark hover:file:bg-rose-100 file:cursor-pointer file:transition-colors">
+                    </div>
+                    <span class="text-[10px] text-gray-400 font-medium block ml-1">Format: JPG, JPEG, PNG. Maksimal ukuran file: 2 MB.</span>
+                </div>
+
                 <hr class="border-gray-100">
 
-                {{-- 4. MULTI-INPUT JAVASCRIPT DINAMIS (UNTUK LIST AKTIVITAS CHECKLIST) --}}
+                {{-- 5. MULTI-INPUT JAVASCRIPT DINAMIS --}}
                 <div class="space-y-3 bg-gray-50/40 border border-gray-200/40 p-6 rounded-3xl">
                     <div class="flex items-center justify-between">
                         <div>
                             <label class="text-[12px] font-black text-gray-800 uppercase tracking-wider block">Aktivitas Utama Program</label>
                             <span class="text-[10px] text-gray-400 font-medium">Daftar checklist kegiatan yang dicakup oleh program ini.</span>
                         </div>
-                        {{-- Tombol Tambah Input Baris Baru --}}
                         <button type="button" id="addActivityBtn" class="bg-gradient-to-r from-maroon-dark to-maroon-light text-white text-xs font-bold px-4 py-2 rounded-xl shadow-md hover:scale-105 active:scale-95 transition-all flex items-center gap-1.5">
                             <i class="fa-solid fa-plus"></i> Tambah List
                         </button>
@@ -110,7 +119,6 @@
         const container = document.getElementById('activitiesContainer');
         const addBtn = document.getElementById('addActivityBtn');
 
-        // Event saat tombol "Tambah List" diklik
         addBtn.addEventListener('click', function() {
             const div = document.createElement('div');
             div.className = 'flex items-center gap-3 animate__animated animate__slideInDown';
@@ -126,7 +134,6 @@
             
             container.appendChild(div);
 
-            // Pasang fungsi hapus baris khusus untuk baris baru ini
             div.querySelector('.delete-row-btn').addEventListener('click', function() {
                 div.remove();
             });

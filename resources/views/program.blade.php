@@ -53,19 +53,41 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
             @forelse($programs ?? [] as $program)
+            @php
+                // Logika pengecekan file gambar yang fleksibel dan aman (Mendukung symlink storage & public folder)
+                $hasImg = false;
+                $imgUrl = '';
+
+                if (!empty($program->gambar)) {
+                    if (file_exists(public_path('storage/' . $program->gambar))) {
+                        $hasImg = true;
+                        $imgUrl = asset('storage/' . $program->gambar);
+                    } elseif (file_exists(public_path('uploads/program/' . $program->gambar))) {
+                        $hasImg = true;
+                        $imgUrl = asset('uploads/program/' . $program->gambar);
+                    } elseif (file_exists(public_path('uploads/' . $program->gambar))) {
+                        $hasImg = true;
+                        $imgUrl = asset('uploads/' . $program->gambar);
+                    }
+                }
+            @endphp
+
             <div class="bg-white rounded-[40px] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 group border border-gray-100 flex flex-col justify-between" data-aos="fade-up" data-aos-delay="{{ $loop->iteration * 100 }}">
                 <div>
-                    <div class="relative h-64 overflow-hidden bg-gradient-to-br from-rose-50 to-teal-50/30 flex items-center justify-center">
-                        {{-- Menggunakan Logika Gambar/Inisial Huruf seperti Admin jika tidak ada upload gambar instan --}}
-                        @if(isset($program->gambar) && $program->gambar)
-                            <img src="{{ asset('storage/' . $program->gambar) }}" alt="{{ $program->nama_program }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                    {{-- Diperjelas: Latar belakang gelap pembantu dihapus agar gambar murni cerah dan tajam --}}
+                    <div class="relative h-64 overflow-hidden bg-gray-100 flex items-center justify-center">
+                        
+                        @if($hasImg)
+                            {{-- Image Opacity diset penuh (w-full h-full object-cover) tanpa filter penggelap --}}
+                            <img src="{{ $imgUrl }}" alt="{{ $program->nama_program }}" class="w-full h-full object-cover opacity-100 group-hover:scale-105 transition-transform duration-700">
                         @else
-                            {{-- Visual inisial keren sebagai pengganti gambar default agar selaras dengan dasbor admin --}}
-                            <div class="absolute inset-0 bg-gradient-to-br from-maroon-dark/90 to-rose-950/90 group-hover:scale-105 transition-transform duration-700"></div>
+                            {{-- Tampilan pengganti jika memang benar-benar tidak ada gambar di database --}}
+                            <div class="absolute inset-0 bg-gradient-to-br from-maroon-dark to-rose-950 group-hover:scale-105 transition-transform duration-700"></div>
                             <div class="relative z-10 text-white font-black text-6xl tracking-wider opacity-20 uppercase select-none">
-                                {{ strtoupper(substr($program->nama_program, 0, 2)) }}
+                                {{ strtoupper(substr($program->nama_program ?? 'PR', 0, 2)) }}
                             </div>
                         @endif
+
                         <div class="absolute top-5 left-5 z-20">
                             <span class="bg-maroon-dark text-white text-[10px] font-bold px-4 py-2 rounded-full uppercase tracking-widest shadow-md">
                                 <i class="fa-solid fa-heart-pulse mr-1"></i> Kegiatan
@@ -77,7 +99,7 @@
                         <h3 class="text-xl font-bold text-maroon-dark mb-3 group-hover:text-teal-600 transition-colors line-clamp-2">
                             {{ $program->nama_program }}
                         </h3>
-                        <p class="text-gray-500 text-sm leading-relaxed">
+                        <p class="text-gray-500 text-sm leading-relaxed line-clamp-3">
                             {{ Str::limit($program->deskripsi, 130) }}
                         </p>
                     </div>
@@ -86,10 +108,10 @@
                 <div class="p-8 pt-0">
                     <div class="flex items-center justify-between border-t border-gray-100 pt-4 mt-2">
                         <span class="bg-amber-50 text-amber-700 border border-amber-200/50 px-3 py-1 rounded-full text-[11px] font-bold">
-                            <i class="fa-regular fa-clock mr-1"></i> {{ $program->label_waktu }}
+                            <i class="fa-regular fa-clock mr-1"></i> {{ $program->label_waktu ?? 'Setiap Hari' }}
                         </span>
 
-                        <button onclick="openModalProgram('{{ e($program->nama_program) }}', '{{ e($program->deskripsi) }}', '{{ isset($program->gambar) && $program->gambar ? asset('storage/' . $program->gambar) : '' }}', '{{ strtoupper(substr($program->nama_program, 0, 2)) }}')" class="text-xs font-bold text-teal-600 hover:text-maroon-dark transition-colors flex items-center gap-2 group/btn">
+                        <button onclick="openModalProgram('{{ e($program->nama_program) }}', '{{ e($program->deskripsi) }}', '{{ $hasImg ? $imgUrl : '' }}', '{{ strtoupper(substr($program->nama_program ?? 'PR', 0, 2)) }}')" class="text-xs font-bold text-teal-600 hover:text-maroon-dark transition-colors flex items-center gap-2 group/btn">
                             Baca Selengkapnya <i class="fas fa-arrow-right transition-transform group-hover/btn:translate-x-1"></i>
                         </button>
                     </div>
@@ -113,9 +135,9 @@
 <div id="modalProgram" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-[2000] flex items-center justify-center p-4">
     <div class="bg-white w-full max-w-2xl rounded-[40px] overflow-hidden shadow-2xl border-t-8 border-maroon-dark animate-[zoomIn_0.3s_ease-out]">
         <div id="modalImgContainer" class="relative h-48 sm:h-64 bg-gray-100 flex items-center justify-center overflow-hidden">
-            <img id="modalImg" src="" class="w-full h-full object-cover hidden" alt="Detail">
+            <img id="modalImg" src="" class="w-full h-full object-cover hidden opacity-100" alt="Detail">
             
-            {{-- Placeholder generator jika program tidak memiliki gambar --}}
+            {{-- Placeholder generator jika modal tidak menerima parameter gambar --}}
             <div id="modalPlaceholder" class="absolute inset-0 bg-gradient-to-br from-maroon-dark to-rose-950 flex items-center justify-center text-white text-7xl font-black opacity-30 select-none uppercase hidden"></div>
             
             <button onclick="closeModalProgram()" class="absolute top-4 right-4 bg-black/50 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold hover:bg-black/80 z-30">&times;</button>

@@ -85,7 +85,7 @@
                     <tr class="hover:bg-gray-50/60 transition-colors duration-200">
                         <td class="px-6 py-5">
                             <div class="flex items-center gap-4">
-                                {{-- Thumbnail Gambar Program dari Storage/Uploads --}}
+                                {{-- Thumbnail Gambar Program --}}
                                 <div class="w-14 h-12 rounded-xl overflow-hidden bg-gradient-to-br from-maroon-dark to-rose-950 flex items-center justify-center text-white font-black text-xs shadow-sm flex-shrink-0">
                                     @if($program->gambar && (file_exists(public_path('uploads/program/' . $program->gambar)) || file_exists(public_path('uploads/' . $program->gambar))))
                                         @php
@@ -100,7 +100,6 @@
                                 </div>
                                 <div>
                                     <h4 class="font-bold text-gray-950 text-base leading-tight mb-1">{{ $program->nama_program }}</h4>
-                                    {{-- Mengamankan error count activities --}}
                                     <span class="text-[10px] text-maroon-dark font-black bg-rose-50 border border-maroon-dark/10 px-2 py-0.5 rounded-md">
                                         <i class="fa-solid fa-bullseye mr-1"></i> {{ isset($program->activities) ? $program->activities->count() : '0' }} Kegiatan Aktif
                                     </span>
@@ -110,7 +109,6 @@
                         <td class="px-6 py-5">
                             <span class="bg-amber-50 text-amber-700 border border-amber-200/50 px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap">
                                 <i class="fa-regular fa-calendar-check mr-1"></i> 
-                                {{-- Memakai label_waktu jika ada, atau fallback ke tanggal pembuatan --}}
                                 {{ $program->label_waktu ?? ($program->created_at ? $program->created_at->format('d M Y') : now()->format('d M Y')) }}
                             </span>
                         </td>
@@ -126,7 +124,7 @@
                                     <i class="fa-solid fa-pen-to-square text-xs"></i>
                                 </a>
                                 
-                                {{-- Tombol Hapus dengan Form --}}
+                                {{-- Tombol Hapus --}}
                                 <form action="{{ route('admin.program.destroy', $program->id) }}" method="POST" onsubmit="return confirm('Apakah kamu yakin ingin menghapus program ini dari dashboard publik?');" class="inline">
                                     @csrf
                                     @method('DELETE')
@@ -139,7 +137,8 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="4" class="px-6 py-12 text-center text-gray-400 font-semibold italic">
+                        {{-- 🚀 FIX: Mengubah colspan dari 4 menjadi 5 agar sejajar dengan jumlah header tabel --}}
+                        <td colspan="5" class="px-6 py-12 text-center text-gray-400 font-semibold italic">
                             <div class="flex flex-col items-center justify-center gap-2">
                                 <i class="fa-solid fa-folder-open text-3xl text-gray-300"></i>
                                 <p>Belum ada data program kesehatan. Silakan tambah baru!</p>

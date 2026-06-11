@@ -108,4 +108,13 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     // CRUD Program
     Route::resource('program', AdminProgramController::class);
+
+    // Route Publik untuk Pasien kirim review via AJAX
+Route::post('/review/store', [ReviewController::class, 'store'])->name('review.store');
+
+// Route Admin (Pastikan berada di dalam grup middleware auth Anda)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/review', [ReviewController::class, 'index'])->name('admin.review.index');
+    Route::delete('/admin/review/{id}', [ReviewController::class, 'destroy'])->name('admin.review.destroy');
+}); // <-- Di sini tadi kelebihan satu simbol });
 });

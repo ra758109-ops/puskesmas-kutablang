@@ -9,15 +9,11 @@ class Berita extends Model
 {
     use HasFactory;
 
-    // Nama tabel di database (pastikan sama dengan migration)
-    protected $table = 'beritas';
-
-    // Kolom yang boleh diisi (Mass Assignment)
     protected $fillable = [
         'judul',
         'slug',
+        'kategori',
         'konten',
-        'gambar',
-        'kategori'
+        'gambar', 
     ];
 }

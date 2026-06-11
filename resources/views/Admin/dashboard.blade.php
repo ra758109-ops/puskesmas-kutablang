@@ -233,6 +233,7 @@
         </div>
     </div>
 
+
     {{-- 🔥 BARIS DATA 2: MANAGEMENT STAF MEDIS (FULL WIDTH) --}}
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div class="lg:col-span-3 bg-white/90 backdrop-blur-md rounded-[2.5rem] p-6 md:p-8 shadow-[0_30px_70px_rgba(0,0,0,0.03)] border border-slate-100 hover:shadow-[0_35px_80px_rgba(20,184,166,0.08)] transition-all duration-500">

@@ -68,4 +68,34 @@ class DokterController extends Controller
 
         return redirect()->back()->with('success', 'Status aktifasi staf medis berhasil diperbarui!');
     }
+    public function edit($id)
+    {
+        // Mencari data dokter, jika tidak ketemu langsung memunculkan error 404
+        $dokter = Dokter::findOrFail($id);
+        
+        // Ambil data poli jika form edit dokter membutuhkan pilihan Poliklinik
+        $polis = Poli::all(); 
+
+        // Mengarahkan ke file blade admin/dokteredit.blade.php atau sejenisnya
+        return view('Admin.dokter.edit', compact('dokter', 'polis'));
+    }
+
+    /**
+     * Pastikan fungsi update ini juga ada untuk memproses simpan perubahan form edit
+     */
+    public function update(Request $request, $id)
+    {
+        $dokter = Dokter::findOrFail($id);
+
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'spesialis' => 'required|string|max:255',
+            // sesuaikan validasi lainnya seperti foto, hari, jam, dll.
+        ]);
+
+        // Logika update data dokter kamu di sini...
+        $dokter->update($request->all());
+
+        return redirect()->route('admin.dokter.index')->with('success', 'Data dokter berhasil diperbarui!');
+    }
 }

@@ -64,12 +64,21 @@
             
             <div class="absolute top-0 left-0 w-[4px] h-full bg-gradient-to-b from-maroon-dark to-rose-500 transform -translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
 
-            {{-- 1. DETAIL ARTIKEL (Dengan Tiruan Mockup Thumbnail Ikon) --}}
+            {{-- 1. DETAIL ARTIKEL (Menampilkan Gambar Unggahan) --}}
             <div class="col-span-1 md:col-span-6 flex items-center gap-5">
-                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100/50 border border-gray-200/50 text-maroon-dark flex flex-col items-center justify-center group-hover:from-maroon-dark group-hover:to-rose-950 group-hover:text-white group-hover:rotate-[8deg] group-hover:scale-105 group-hover:shadow-xl group-hover:shadow-maroon-dark/10 transition-all duration-500 shadow-inner shrink-0 relative">
-                    <i class="fa-regular fa-newspaper text-xl"></i>
-                    <span class="absolute -bottom-1 -right-1 w-5 h-5 rounded-md bg-white border border-gray-100 shadow-sm flex items-center justify-center text-[8px] text-gray-400 group-hover:text-maroon-dark transition-colors font-black">ID</span>
+                
+                {{-- 🚀 UPDATE: Thumbnail Gambar Dinamis --}}
+                <div class="w-16 h-16 rounded-2xl border border-gray-200/50 flex flex-col items-center justify-center group-hover:rotate-[8deg] group-hover:scale-105 group-hover:shadow-xl group-hover:shadow-maroon-dark/10 transition-all duration-500 shadow-inner shrink-0 relative overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100/50">
+                    @if($b->gambar)
+                        <img src="{{ asset('storage/berita/' . $b->gambar) }}" alt="Foto {{ $b->judul }}" class="w-full h-full object-cover">
+                    @else
+                        <div class="text-maroon-dark group-hover:text-maroon-dark transition-colors duration-500 flex flex-col items-center justify-center">
+                            <i class="fa-regular fa-newspaper text-xl"></i>
+                        </div>
+                    @endif
+                    <span class="absolute -bottom-1 -right-1 w-5 h-5 rounded-md bg-white border border-gray-100 shadow-sm flex items-center justify-center text-[8px] text-gray-400 group-hover:text-maroon-dark transition-colors font-black z-10">ID</span>
                 </div>
+
                 <div class="flex flex-col min-w-0 space-y-1">
                     <span class="text-base md:text-lg font-black text-gray-800 group-hover:text-maroon-dark transition-colors duration-300 line-clamp-1 tracking-tight leading-snug">
                         {{ $b->judul }}

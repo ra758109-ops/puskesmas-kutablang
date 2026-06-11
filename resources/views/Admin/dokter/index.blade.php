@@ -109,10 +109,12 @@
                 </div>
             </div>
 
-            {{-- 2. UNIT POLIKLINIK --}}
+            {{-- 2. UNIT POLIKLINIK (SUDAH DIFUNGSIKAN) --}}
             <div class="col-span-1 lg:col-span-3 border-t lg:border-t-0 pt-3 lg:pt-0 border-gray-50">
                 <span class="inline-flex items-center gap-1.5 text-[10px] font-extrabold text-maroon-dark bg-rose-50/60 border border-maroon-dark/10 px-3 py-1.5 rounded-xl uppercase tracking-wider shadow-sm group-hover:bg-maroon-dark group-hover:text-white transition-all duration-500">
-                    <i class="fa-solid fa-hospital text-[9px]"></i> {{ $dokter->service->nama_layanan ?? 'Poli Umum' }}
+                    <i class="fa-solid fa-hospital text-[9px]"></i> 
+                    {{-- 🚀 Memanggil nama layanan lewat relasi 'poli' di model Dokter --}}
+                    {{ $dokter->poli->nama_layanan ?? 'Poli Belum Diatur' }}
                 </span>
             </div>
 

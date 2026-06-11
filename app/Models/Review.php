@@ -2,20 +2,23 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Review extends Model
 {
-    // Mendaftarkan kolom agar bisa diisi oleh ReviewController
+    use HasFactory;
+
+    // Kolom yang boleh diisi mass assignment
     protected $fillable = [
         'pendaftaran_id',
+        'nik',
         'rating',
-        'komentar'
+        'komentar',
     ];
 
     /**
-     * Nilai Tambah: Relasi balik ke model Pasien (Pendaftaran)
-     * Berguna banget nanti kalau Admin mau menampilkan nama pasien di dashboard review!
+     * Relasi ke tabel pasien
      */
     public function pasien()
     {

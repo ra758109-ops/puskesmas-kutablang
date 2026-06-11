@@ -24,3 +24,6 @@ class Dokter extends Model
         return $this->belongsTo(Poli::class, 'poli_id');
     }
 }
+
+
+

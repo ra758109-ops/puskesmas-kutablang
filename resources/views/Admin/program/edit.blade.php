@@ -19,7 +19,8 @@
             <h2 class="text-3xl font-black text-gray-950 tracking-tight">Edit <span class="bg-gradient-to-r from-maroon-dark to-rose-700 bg-clip-text text-transparent">Program Kesehatan</span></h2>
         </div>
 
-        <form action="{{ route('admin.program.update', $program->id) }}" method="POST">
+        {{-- 🚀 FIX: Menambahkan enctype="multipart/form-data" agar sistem mendukung upload file gambar --}}
+        <form action="{{ route('admin.program.update', $program->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             
@@ -38,6 +39,31 @@
                 <div class="space-y-1.5 group">
                     <label class="text-[11px] font-black text-gray-500 uppercase tracking-widest block ml-1">Deskripsi</label>
                     <textarea name="deskripsi" rows="3" required class="w-full p-5 bg-gray-50 border border-gray-200 rounded-2xl outline-none text-sm font-semibold text-gray-800 resize-none">{{ $program->deskripsi }}</textarea>
+                </div>
+
+                {{-- 🚀 FIX TAMBAHAN: KOMPONEN INPUT GAMBAR BARU + PREVIEW GAMBAR AKTIF --}}
+                <div class="space-y-3">
+                    <label class="text-[11px] font-black text-gray-500 uppercase tracking-widest block ml-1">Gambar Cover Program</label>
+                    
+                    {{-- Menampilkan gambar lama jika tersedia di server --}}
+                    @if($program->gambar && file_exists(public_path('uploads/program/' . $program->gambar)))
+                        <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl border border-gray-200/60 max-w-md">
+                            <div class="w-20 h-20 rounded-xl overflow-hidden shadow-sm bg-slate-100 flex-shrink-0">
+                                <img src="{{ asset('uploads/program/' . $program->gambar) }}" alt="Current Image" class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <span class="text-xs font-bold text-teal-600 block mb-0.5"><i class="fa-solid fa-circle-check"></i> Gambar Aktif</span>
+                                <p class="text-[11px] text-gray-400 break-all">{{ $program->gambar }}</p>
+                                <span class="text-[10px] text-gray-400 italic block mt-1">Pilih file baru di bawah jika ingin mengganti gambar ini.</span>
+                            </div>
+                        </div>
+                    @endif
+
+                    <div class="relative flex items-center">
+                        <span class="absolute left-5 text-gray-400"><i class="fa-solid fa-image text-base"></i></span>
+                        <input type="file" name="gambar" accept="image/*" class="w-full pl-12 pr-5 py-3.5 bg-gray-50/50 border border-gray-200/60 rounded-2xl focus:border-maroon-dark focus:ring-4 focus:ring-maroon-dark/10 outline-none transition-all duration-300 text-sm font-semibold text-gray-500 focus:bg-white file:mr-4 file:py-1.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-rose-50 file:text-maroon-dark hover:file:bg-rose-100 file:cursor-pointer file:transition-colors">
+                    </div>
+                    <span class="text-[10px] text-gray-400 font-medium block ml-1">Format berkas yang didukung: JPG, JPEG, PNG. Maksimal ukuran: 2 MB.</span>
                 </div>
 
                 <div class="space-y-3 bg-gray-50/40 border border-gray-200/40 p-6 rounded-3xl">

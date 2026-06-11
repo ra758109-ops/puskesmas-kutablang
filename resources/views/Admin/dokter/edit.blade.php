@@ -30,7 +30,7 @@
                     <label class="text-xs font-black text-gray-500 uppercase tracking-wider block">Nama Lengkap & Gelar</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400"><i class="fas fa-user-md"></i></span>
-                        <input type="text" name="nama_dokter" value="{{ $dokter->nama_dokter }}" required class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl text-sm font-semibold focus:outline-none focus:border-maroon-dark focus:bg-white transition-all duration-300">
+                        <input type="text" name="nama_dokter" value="{{ old('nama_dokter', $dokter->nama_dokter) }}" required class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl text-sm font-semibold focus:outline-none focus:border-maroon-dark focus:bg-white transition-all duration-300">
                     </div>
                 </div>
 
@@ -40,9 +40,9 @@
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400"><i class="fas fa-hospital text-sm"></i></span>
                         <select name="service_id" required class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl text-sm font-semibold focus:outline-none focus:border-maroon-dark focus:bg-white transition-all duration-300 appearance-none">
-                            @foreach($services as $service)
-                                <option value="{{ $service->id }}" {{ $dokter->service_id == $service->id ? 'selected' : '' }}>
-                                    {{ $service->nama_layanan }}
+                            @foreach($polis as $poli)
+                                <option value="{{ $poli->id }}" {{ $dokter->service_id == $poli->id ? 'selected' : '' }}>
+                                    {{ $poli->nama_layanan }}
                                 </option>
                             @endforeach
                         </select>
@@ -54,7 +54,7 @@
                     <label class="text-xs font-black text-gray-500 uppercase tracking-wider block">Hari Kerja / Praktik</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400"><i class="far fa-calendar-alt"></i></span>
-                        <input type="text" name="hari" value="{{ $dokter->hari }}" required class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl text-sm font-semibold focus:outline-none focus:border-maroon-dark focus:bg-white transition-all duration-300">
+                        <input type="text" name="hari" value="{{ old('hari', $dokter->hari) }}" required class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl text-sm font-semibold focus:outline-none focus:border-maroon-dark focus:bg-white transition-all duration-300">
                     </div>
                 </div>
 
@@ -63,7 +63,7 @@
                     <label class="text-xs font-black text-gray-500 uppercase tracking-wider block">Jam Operasional Shifting</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400"><i class="far fa-clock"></i></span>
-                        <input type="text" name="jam" value="{{ $dokter->jam }}" required class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl text-sm font-semibold focus:outline-none focus:border-maroon-dark focus:bg-white transition-all duration-300">
+                        <input type="text" name="jam" value="{{ old('jam', $dokter->jam) }}" required class="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl text-sm font-semibold focus:outline-none focus:border-maroon-dark focus:bg-white transition-all duration-300">
                     </div>
                 </div>
             </div>
@@ -74,10 +74,10 @@
                 <div class="flex flex-col md:flex-row items-center gap-6 p-6 border border-dashed border-gray-200 rounded-[2rem] bg-gray-50/50">
                     {{-- Box Preview Foto Lama / Baru --}}
                     <div class="w-24 h-24 rounded-2xl bg-white border border-gray-100 flex items-center justify-center text-gray-300 text-3xl shadow-inner shrink-0 overflow-hidden">
-                        @if($dokter->foto && file_exists(public_path('uploads/dokter/' . $dokter->foto)))
+                        @if($dokter->foto)
                             <img id="image-preview" src="{{ asset('uploads/dokter/' . $dokter->foto) }}" alt="Preview" class="w-full h-full object-cover">
                         @else
-                            <i id="placeholder-icon" class="fas fa-user-md"></i>
+                            <i id="placeholder-icon" class="fas fa-user-md text-gray-300"></i>
                             <img id="image-preview" src="#" alt="Preview" class="w-full h-full object-cover hidden">
                         @endif
                     </div>

@@ -9,7 +9,7 @@
 <div class="container mx-auto px-6 py-8 max-w-5xl space-y-8 animate-fade-in">
     {{-- Header & Navigasi --}}
     <div class="flex items-center justify-between">
-        <a href="{{ route('admin.patients.index') }}" class="group flex items-center gap-2 text-gray-500 hover:text-maroon-dark transition-all">
+        <a href="{{ route('admin.pasien.index') }}" class="group flex items-center gap-2 text-gray-500 hover:text-maroon-dark transition-all">
             <i class="fa-solid fa-arrow-left-long group-hover:-translate-x-1 transition-transform"></i>
             <span class="text-sm font-bold">Kembali ke Daftar</span>
         </a>
@@ -17,7 +17,7 @@
             <button onclick="window.print()" class="px-5 py-2.5 bg-gray-100 text-gray-600 rounded-xl font-bold text-xs hover:bg-gray-200 transition-all flex items-center gap-2">
                 <i class="fa-solid fa-print"></i> Cetak Resume
             </button>
-            <a href="{{ route('admin.patients.edit', $patient->id) }}" class="px-5 py-2.5 bg-maroon-dark text-white rounded-xl font-bold text-xs shadow-lg shadow-maroon-dark/20 hover:-translate-y-1 transition-all flex items-center gap-2">
+            <a href="{{ route('admin.pasien.edit', $patient->id) }}" class="px-5 py-2.5 bg-maroon-dark text-white rounded-xl font-bold text-xs shadow-lg shadow-maroon-dark/20 hover:-translate-y-1 transition-all flex items-center gap-2">
                 <i class="fa-solid fa-pen-to-square"></i> Edit Data
             </a>
         </div>
